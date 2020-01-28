@@ -28,6 +28,7 @@ public class UIManager_script : MonoBehaviour
 
     public void ToggleEndScreen(bool b, bool r, string t = null, string s = null)
     {
+        
         EndGameScreen.SetActive(b);
         if (!b) //ui off skip rest
         {
@@ -35,6 +36,9 @@ public class UIManager_script : MonoBehaviour
         }
         _endGameTitleText.text = t;
         _endGameText.text = s;
+
+        _roundEndButton.onClick.RemoveAllListeners();
+
         if (r)
         {
             _roundEndButton.onClick.AddListener(_gameController.NewRound);

@@ -13,8 +13,8 @@ public class GameController_script : MonoBehaviour
     
     void Awake()
     {
-        _leftBoard = MainCanvas.transform.GetChild(1).GetChild(3).GetComponent<TotalValueTracker_script>();
-        _rigthBoard = MainCanvas.transform.GetChild(1).GetChild(4).GetComponent<TotalValueTracker_script>();
+        _leftBoard = MainCanvas.transform.GetChild(1).GetChild(4).GetComponent<TotalValueTracker_script>();
+        _rigthBoard = MainCanvas.transform.GetChild(1).GetChild(5).GetComponent<TotalValueTracker_script>();
         _uiManager = GetComponent<UIManager_script>();
         _globalDeckManager = GetComponent<GlobalDeckManager_script>();
         ActivePlayer = 1;
@@ -22,17 +22,25 @@ public class GameController_script : MonoBehaviour
 
     void Start()
     {
-        StartGame(); //move to button
+        GenerateDecks();
+        Invoke("StartGame", 1f);//move to button
+    }
+
+    public void GenerateDecks()
+    {
+        _leftBoard.GenerateDeck();
+        _rigthBoard.GenerateDeck();
+        _globalDeckManager.GenerateGlobalDeck();
     }
 
     public void StartGame()
     {
-        _globalDeckManager.MakeActiveDeck();
         SwitchPlayer();
     }
 
     public void SwitchPlayer()
     {
+        Debug.Log("Switch Player");
         if (_leftBoard.PlayerDone && !_rigthBoard.PlayerDone)
         {
             ActivePlayer = 1;
@@ -69,7 +77,7 @@ public class GameController_script : MonoBehaviour
         Debug.Log("Compare score");
         string t;
         string s;
-        if ((_leftBoard.ActiveValue > _rigthBoard.ActiveValue && _leftBoard.ActiveValue <= MaxValue) || (_leftBoard.ActiveValue < MaxValue && _rigthBoard.ActiveValue > MaxValue)) //left wins
+        if ((_leftBoard.ActiveValue > _rigthBoard.ActiveValue && _leftBoard.ActiveValue <= MaxValue) || (_leftBoard.ActiveValue <= MaxValue && _rigthBoard.ActiveValue > MaxValue)) //left wins
         {
             _leftBoard.Wins++;
             _uiManager.UpdateLeftRoundCounter(_leftBoard.Wins);
@@ -85,7 +93,7 @@ public class GameController_script : MonoBehaviour
             s = "Player 1 Wins";
             _uiManager.ToggleEndScreen(true,true, t, s);
         }
-        else if ((_rigthBoard.ActiveValue > _leftBoard.ActiveValue && _rigthBoard.ActiveValue <= MaxValue) || (_rigthBoard.ActiveValue < MaxValue && _leftBoard.ActiveValue > MaxValue)) //right wins
+        else if ((_rigthBoard.ActiveValue > _leftBoard.ActiveValue && _rigthBoard.ActiveValue <= MaxValue) || (_rigthBoard.ActiveValue <= MaxValue && _leftBoard.ActiveValue > MaxValue)) //right wins
         {
             _rigthBoard.Wins++;
             _uiManager.UpdateRightRoundCounter(_rigthBoard.Wins);
@@ -117,18 +125,20 @@ public class GameController_script : MonoBehaviour
 
     IEnumerator StartNewRound()
     {
+        _uiManager.ToggleEndScreen(false, false);
         List<PlayCard_script> pcs = new List<PlayCard_script>();
         pcs.AddRange(_leftBoard.transform.GetChild(0).GetComponentsInChildren<PlayCard_script>());
         pcs.AddRange(_rigthBoard.transform.GetChild(0).GetComponentsInChildren<PlayCard_script>());
+        //sound effect
         foreach (PlayCard_script pc in pcs)
         {
-            Destroy(pc.gameObject);
+           pc.RemoveCard();
         }
         _leftBoard.ResetValues();
         _rigthBoard.ResetValues();
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(1.1f);
         //screen transition etc
-        _uiManager.ToggleEndScreen(false, false);
+        
         StartGame();
     }
 
@@ -143,6 +153,8 @@ public class GameController_script : MonoBehaviour
         _leftBoard.ResetValues();
         _rigthBoard.ResetValues();
         //screen transition etc
+        yield return new WaitForSeconds(2f);
+        GenerateDecks();
         yield return new WaitForSeconds(2f);
         _uiManager.ToggleEndScreen(false, false);
         StartGame();

@@ -16,6 +16,8 @@ public class TotalValueTracker_script : MonoBehaviour
     private Button _skipButton;
     private Button _stayButton;
     private Transform _mainCardBoard;
+    private PlayerDeckMananger_script _playerDeckMananger;
+    public Transform DiscardPile;
 
     void Awake()
     {
@@ -23,7 +25,13 @@ public class TotalValueTracker_script : MonoBehaviour
         _skipButton = this.transform.GetChild(3).GetChild(0).GetComponent<Button>();
         _stayButton = this.transform.GetChild(3).GetChild(1).GetComponent<Button>();
         _mainCardBoard = this.transform.GetChild(0);
+        _playerDeckMananger = GetComponent<PlayerDeckMananger_script>();
         ResetValues();
+    }
+
+    public void GenerateDeck()
+    {
+        _playerDeckMananger.GenereateDeck();
     }
 
     public void ResetValues()
@@ -82,4 +90,5 @@ public class TotalValueTracker_script : MonoBehaviour
         _skipButton.interactable = b;
         _stayButton.interactable = b;
     }
+    
 }

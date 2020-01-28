@@ -12,6 +12,7 @@ public class GlobalDeckManager_script : MonoBehaviour
     private Transform _leftMainCardBoard, _rigthMainCardBoard;
     private TotalValueTracker_script _leftBoard, _rigthBoard;
     private GameController_script _gameController;
+    public Color CardColor;
 
     void Start()
     {
@@ -22,7 +23,7 @@ public class GlobalDeckManager_script : MonoBehaviour
         _rigthMainCardBoard = _rigthBoard.transform.GetChild(0);
     }
 
-    public void MakeActiveDeck()
+    public void GenerateGlobalDeck()
     {
         _activeDeck = new List<int>();
         for (int i = 0; i < DeckSize; i++)
@@ -42,8 +43,8 @@ public class GlobalDeckManager_script : MonoBehaviour
         GameObject card = Instantiate(GlobalPlayCardPrefab);
         PlayCard_script pc = card.GetComponent<PlayCard_script>();
         int i = _activeDeck[0];
-        pc.Config(3,i);
-        pc.PlaceCard(spawn,false);
+        pc.Config(_gameController.ActivePlayer,i, CardColor,_gameController);
+        pc.PlaceCard(spawn, false);
         _activeDeck.RemoveAt(0);
     }
 
