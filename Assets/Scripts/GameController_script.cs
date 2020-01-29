@@ -121,6 +121,7 @@ public class GameController_script : MonoBehaviour
             }
             t = "Round Over";
             s = "Player 1 Wins";
+            ActivePlayer = 1;
             _uiManager.ToggleEndScreen(true,true, t, s);
         }
         else if ((_rigthBoard.ActiveValue > _leftBoard.ActiveValue && _rigthBoard.ActiveValue <= MaxValue) || (_rigthBoard.ActiveValue <= MaxValue && _leftBoard.ActiveValue > MaxValue)) //right wins
@@ -138,6 +139,7 @@ public class GameController_script : MonoBehaviour
             }
             t = "Round Over";
             s = "Player 2 Wins";
+            ActivePlayer = 0;
             _uiManager.ToggleEndScreen(true,true, t, s);
         }
         else if(_leftBoard.ActiveValue == _rigthBoard.ActiveValue || (_leftBoard.ActiveValue > MaxValue && _rigthBoard.ActiveValue > MaxValue)) //draw

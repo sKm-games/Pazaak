@@ -21,6 +21,7 @@ public class TotalValueTracker_script : MonoBehaviour
     [HideInInspector] public Transform _handCardBoard;
     private PlayerDeckMananger_script _playerDeckMananger;
     public Transform DiscardPile;
+    private GameObject _playerDoneScreen;
 
     void Awake()
     {
@@ -30,6 +31,7 @@ public class TotalValueTracker_script : MonoBehaviour
         _mainCardBoard = this.transform.GetChild(0);
         _handCardBoard = this.transform.GetChild(1);
         _playerDeckMananger = GetComponent<PlayerDeckMananger_script>();
+        _playerDoneScreen = this.transform.GetChild(2).GetChild(3).gameObject;
         ResetValues();
     }
 
@@ -45,6 +47,7 @@ public class TotalValueTracker_script : MonoBehaviour
         _valueText.color = TextColors[0];
         PlayerDone = false;
         Wins = 0;
+        _playerDoneScreen.SetActive(false);
         //TogglePlayer(true);
         /*PlayCard_script[] pcs = _mainCardBoard.GetComponentsInChildren<PlayCard_script>();
         foreach (PlayCard_script pc in pcs)
@@ -67,9 +70,13 @@ public class TotalValueTracker_script : MonoBehaviour
         else if (ActiveValue > GameController.MaxValue)
         {
             _valueText.color = TextColors[2];
-            SetPlayerDone();
-            return;
+            //SetPlayerDone();
+            //return;
             //Lost, over max
+        }
+        else if (ActiveValue < GameController.MaxValue)
+        {
+            _valueText.color = TextColors[0];
         }
         else if (b)
         {
@@ -86,6 +93,7 @@ public class TotalValueTracker_script : MonoBehaviour
             Debug.Log("TotalValueTracker_script: SetPlayerDone: Wrong Player " +PlayerID+"/"+GameController.ActivePlayer);
             return;
         }
+        _playerDoneScreen.SetActive(true);
         PlayerDone = true;
         TogglePlayer(false);
         Debug.Log("Player " +PlayerID +" Done");

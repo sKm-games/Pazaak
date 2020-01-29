@@ -12,7 +12,7 @@ public class GlobalDeckManager_script : MonoBehaviour
     private Transform _leftMainCardBoard, _rigthMainCardBoard;
     private TotalValueTracker_script _leftBoard, _rigthBoard;
     private GameController_script _gameController;
-    public Color CardColor;
+    public Color[] CardColor;
 
     void Start()
     {

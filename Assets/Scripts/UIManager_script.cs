@@ -71,6 +71,7 @@ public class UIManager_script : MonoBehaviour
         {
             ri.transform.GetChild(0).gameObject.SetActive(false);
         }
+
         ToggleEndScreen(false,false);
     }
 

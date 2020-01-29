@@ -31,14 +31,13 @@ public class PlayCard_script : MonoBehaviour
         this.transform.localPosition = _startPos;
     }
 
-    public void Config(int id, int v, Color c, GameController_script gc)
+    public void Config(int id, int v, Color[] c, GameController_script gc)
     {
         _startingTransform = transform.parent;
         _startPos = this.transform.localPosition;
         _valueText = this.transform.GetComponentInChildren<TextMeshProUGUI>();
         _totalValueTracker = this.transform.GetComponentInParent<TotalValueTracker_script>();
         _backgroundImage = this.transform.GetChild(0).GetComponent<Image>();
-        _backgroundImage.color = c;
         if (_totalValueTracker != null)
         {
             _discardPile = _totalValueTracker.DiscardPile;
@@ -47,22 +46,19 @@ public class PlayCard_script : MonoBehaviour
         _gameController = gc;
         ID = id;
         Value = v;
-        _valueText.text = GetText();
-    }
 
-    private string GetText()
-    {
         string s;
         if (Value < 0)
         {
             s = Value.ToString("F0");
+            _backgroundImage.color = c[0];
         }
         else
         {
             s = "+" + Value;
+            _backgroundImage.color = c[1];
         }
-
-        return s;
+        _valueText.text = s;
     }
 
     public void PlaceCard(Transform t, bool b = true, bool s = true)

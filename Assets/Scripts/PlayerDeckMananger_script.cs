@@ -9,7 +9,7 @@ public class PlayerDeckMananger_script : MonoBehaviour
     private List<int> _activeDeck;
     private Transform _cardSlots;
     private TotalValueTracker_script _totalValueTracker;
-    public Color CardColor;
+    public Color[] CardColors;
     
     void Start()
     {
@@ -28,7 +28,7 @@ public class PlayerDeckMananger_script : MonoBehaviour
             GameObject go = Instantiate(CardPrefab);
             PlayCard_script pc = go.GetComponent<PlayCard_script>();
             pc.PlaceCard(t, false, false);
-            pc.Config(_totalValueTracker.PlayerID, v,CardColor, _totalValueTracker.GameController);
+            pc.Config(_totalValueTracker.PlayerID, v, CardColors, _totalValueTracker.GameController);
         }
     }
 }
