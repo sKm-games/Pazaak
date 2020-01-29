@@ -90,7 +90,24 @@ public class PlayCard_script : MonoBehaviour
     IEnumerator DoRemoveCard()
     {
         this.transform.DOMove(_discardPile.position, DiscardTime);
-        this.transform.DORotate(_discardPile.eulerAngles, DiscardTime);
+        float r = Random.Range(-20, 20);
+        Vector3 newRot = new Vector3(0,0, r);
+        //this.transform.DORotate(_discardPile.eulerAngles, DiscardTime);
+        this.transform.DORotate(newRot, DiscardTime);
+        yield return new WaitForSeconds(DiscardTime);
+        this.transform.SetParent(_discardPile);
+        //this.transform.localPosition = _discardPile.position;
+        //Destroy(this.gameObject);
+    }
+
+    public void DestroyCard()
+    {
+        StartCoroutine("DoDestroyCard");
+    }
+
+    IEnumerator DoDestroyCard()
+    {
+        this.transform.DOScale(new Vector3(0, 0, 0), DiscardTime);
         yield return new WaitForSeconds(DiscardTime);
         Destroy(this.gameObject);
     }

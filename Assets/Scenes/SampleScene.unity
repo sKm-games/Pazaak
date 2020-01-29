@@ -1893,6 +1893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerID: 0
   ActiveValue: 0
+  AllowMove: 0
   TextColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0.12152922, g: 1, b: 0, a: 1}
@@ -1900,6 +1901,8 @@ MonoBehaviour:
   PlayerDone: 0
   Wins: 0
   GameController: {fileID: 930053621}
+  _mainCardBoard: {fileID: 0}
+  _handCardBoard: {fileID: 0}
   DiscardPile: {fileID: 906625575}
 --- !u!114 &508471582
 MonoBehaviour:
@@ -1915,7 +1918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardPrefab: {fileID: 383546694082903800, guid: 11caa43365e377b4089a1b7a9e5f9ac8,
     type: 3}
-  PlayerDeck: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
+  PlayerDeck: 010000000200000003000000040000000500000006000000fffffffffefffffffdfffffffcfffffffbfffffffaffffff
   CardColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &519420028
 GameObject:
@@ -1999,6 +2002,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &550003536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 550003538}
+  - component: {fileID: 550003537}
+  m_Layer: 0
+  m_Name: AIMananger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &550003537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550003536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9392d46895e785d44a156ef6f821f267, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AIBoard: {fileID: 1675544086}
+  PlayerBoard: {fileID: 508471581}
+  MoveTime: 1
+  EndOffset: 5
+--- !u!4 &550003538
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550003536}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 383.44287, y: 255.1242, z: -36}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &596018590
 PrefabInstance:
@@ -2982,7 +3032,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &852814048
 GameObject:
@@ -3636,6 +3686,9 @@ MonoBehaviour:
   MainCanvas: {fileID: 1269769916}
   _leftBoard: {fileID: 0}
   _rigthBoard: {fileID: 0}
+  AiMananger: {fileID: 550003537}
+  SwitchDelay: 1
+  RoundDone: 0
 --- !u!114 &930053622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4924,7 +4977,7 @@ RectTransform:
   - {fileID: 1215189978}
   - {fileID: 375434190}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6829,6 +6882,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerID: 1
   ActiveValue: 0
+  AllowMove: 0
   TextColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0.12152922, g: 1, b: 0, a: 1}
@@ -6836,6 +6890,8 @@ MonoBehaviour:
   PlayerDone: 0
   Wins: 0
   GameController: {fileID: 930053621}
+  _mainCardBoard: {fileID: 0}
+  _handCardBoard: {fileID: 0}
   DiscardPile: {fileID: 906625575}
 --- !u!114 &1675544087
 MonoBehaviour:
@@ -6851,7 +6907,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardPrefab: {fileID: 383546694082903800, guid: 11caa43365e377b4089a1b7a9e5f9ac8,
     type: 3}
-  PlayerDeck: 0100000002000000030000000400000005000000060000000700000008000000090000000a000000
+  PlayerDeck: 010000000200000003000000040000000500000006000000fffffffffefffffffdfffffffcfffffffbfffffffaffffff
   CardColor: {r: 0, g: 0.2262168, b: 1, a: 1}
 --- !u!1001 &1688307136
 PrefabInstance:

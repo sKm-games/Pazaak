@@ -69,6 +69,7 @@
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
+    <Compile Include="Assets\Scripts\AIMananger_script.cs" />
     <Compile Include="Assets\Scripts\GameController_script.cs" />
     <Compile Include="Assets\Scripts\GlobalDeckManager_script.cs" />
     <Compile Include="Assets\Scripts\IListExtensions_script.cs" />

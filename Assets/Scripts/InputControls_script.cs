@@ -68,6 +68,13 @@ public class InputControls_script : MonoBehaviour
                         //wrong player
                         return;
                      }
+                    if ((_gameController.ActivePlayer == 0 && !_gameController._leftBoard.AllowMove) || (_gameController.ActivePlayer == 1 && !_gameController._rigthBoard.AllowMove))
+                    {
+                        _playCard = null;
+                        Debug.Log("InputControls_script: GetCard: already placed card");
+                        return;
+                        
+                    }
                     break;
                  }
             }

@@ -10,6 +10,10 @@ public class GameController_script : MonoBehaviour
     [HideInInspector] public TotalValueTracker_script _leftBoard, _rigthBoard;
     private UIManager_script _uiManager;
     private GlobalDeckManager_script _globalDeckManager;
+    public AIMananger_script AiMananger;
+    public float SwitchDelay;
+    private Coroutine _switchPlayer;
+    public bool RoundDone;
     
     void Awake()
     {
@@ -22,8 +26,10 @@ public class GameController_script : MonoBehaviour
 
     void Start()
     {
-        GenerateDecks();
-        Invoke("StartGame", 1f);//move to button
+        _leftBoard.TogglePlayer(false);
+        _rigthBoard.TogglePlayer(false);
+        Invoke("GenerateDecks", 1f);
+        Invoke("StartGame", 2f);
     }
 
     public void GenerateDecks()
@@ -35,12 +41,28 @@ public class GameController_script : MonoBehaviour
 
     public void StartGame()
     {
+        RoundDone = false;
         SwitchPlayer();
     }
 
     public void SwitchPlayer()
     {
-        Debug.Log("Switch Player");
+        _switchPlayer = StartCoroutine(DoSwitchPlayer());
+        Debug.Log("Switch Player: ActivePlayer - " +ActivePlayer);
+    }
+
+    IEnumerator DoSwitchPlayer()
+    {
+        if (RoundDone)
+        {
+            Debug.Log("Round Over");
+            //StopCoroutine(_switchPlayer);
+            yield break;
+        }
+        _leftBoard.TogglePlayer(false);
+        _rigthBoard.TogglePlayer(false);
+        yield return new WaitForSeconds(SwitchDelay);
+        Debug.Log("Do Switch Player");
         if (_leftBoard.PlayerDone && !_rigthBoard.PlayerDone)
         {
             ActivePlayer = 1;
@@ -51,8 +73,10 @@ public class GameController_script : MonoBehaviour
         }
         else if((_leftBoard.ActiveValue > MaxValue || _rigthBoard.ActiveValue > MaxValue) || (_leftBoard.PlayerDone && _rigthBoard.PlayerDone))
         {
+            RoundDone = true;
             CompareScore();
-            return;
+            //StopCoroutine(_switchPlayer);
+            yield break;
         }
         else
         {
@@ -70,6 +94,10 @@ public class GameController_script : MonoBehaviour
         }
         _uiManager.SwitchPlayer(ActivePlayer);
         _globalDeckManager.PlaceGlobalCard(ActivePlayer);
+        if (ActivePlayer == AiMananger.AIBoard.PlayerID)
+        {
+            AiMananger.DeterminPlay();
+        }
     }
 
     void CompareScore()
@@ -77,6 +105,8 @@ public class GameController_script : MonoBehaviour
         Debug.Log("Compare score");
         string t;
         string s;
+        RoundDone = true;
+        AiMananger.RoundOver();
         if ((_leftBoard.ActiveValue > _rigthBoard.ActiveValue && _leftBoard.ActiveValue <= MaxValue) || (_leftBoard.ActiveValue <= MaxValue && _rigthBoard.ActiveValue > MaxValue)) //left wins
         {
             _leftBoard.Wins++;
@@ -103,6 +133,7 @@ public class GameController_script : MonoBehaviour
                 t = "Game Over";
                 s = "Player 2 Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s);
+                
                 return;
             }
             t = "Round Over";
@@ -117,9 +148,10 @@ public class GameController_script : MonoBehaviour
         }
     }
 
-    public void NewRound()
+    public void NewRound() //ui button
     {
         Debug.Log("New round");
+        StopAllCoroutines();
         StartCoroutine(StartNewRound());
     }
 
@@ -138,13 +170,13 @@ public class GameController_script : MonoBehaviour
         _rigthBoard.ResetValues();
         yield return new WaitForSeconds(1.1f);
         //screen transition etc
-        
         StartGame();
     }
 
-    public void NewGame()
+    public void NewGame() //ui button
     {
         Debug.Log("New game");
+        StopAllCoroutines();
         StartCoroutine(StartNewGame());
     }
 
@@ -152,11 +184,22 @@ public class GameController_script : MonoBehaviour
     {
         _leftBoard.ResetValues();
         _rigthBoard.ResetValues();
+        List<PlayCard_script> pcs = new List<PlayCard_script>();
+        pcs.AddRange(_leftBoard.DiscardPile.GetComponentsInChildren<PlayCard_script>());
+        pcs.AddRange(_leftBoard._mainCardBoard.GetComponentsInChildren<PlayCard_script>());
+        pcs.AddRange(_leftBoard._handCardBoard.GetComponentsInChildren<PlayCard_script>());
+        pcs.AddRange(_rigthBoard._mainCardBoard.GetComponentsInChildren<PlayCard_script>());
+        pcs.AddRange(_rigthBoard._handCardBoard.GetComponentsInChildren<PlayCard_script>());
+        foreach (PlayCard_script pc in pcs)
+        {
+            pc.DestroyCard();
+        }
         //screen transition etc
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         GenerateDecks();
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         _uiManager.ToggleEndScreen(false, false);
+        _uiManager.ResetUI();
         StartGame();
     }
     

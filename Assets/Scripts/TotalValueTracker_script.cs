@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 public class TotalValueTracker_script : MonoBehaviour
 {
     public int PlayerID;
     public int ActiveValue;
+    public bool AllowMove;
     private TextMeshProUGUI _valueText;
     public Color[] TextColors;
     public bool PlayerDone;
@@ -15,7 +17,8 @@ public class TotalValueTracker_script : MonoBehaviour
     public GameController_script GameController;
     private Button _skipButton;
     private Button _stayButton;
-    private Transform _mainCardBoard;
+    [HideInInspector] public Transform _mainCardBoard;
+    [HideInInspector] public Transform _handCardBoard;
     private PlayerDeckMananger_script _playerDeckMananger;
     public Transform DiscardPile;
 
@@ -25,6 +28,7 @@ public class TotalValueTracker_script : MonoBehaviour
         _skipButton = this.transform.GetChild(3).GetChild(0).GetComponent<Button>();
         _stayButton = this.transform.GetChild(3).GetChild(1).GetComponent<Button>();
         _mainCardBoard = this.transform.GetChild(0);
+        _handCardBoard = this.transform.GetChild(1);
         _playerDeckMananger = GetComponent<PlayerDeckMananger_script>();
         ResetValues();
     }
@@ -40,6 +44,7 @@ public class TotalValueTracker_script : MonoBehaviour
         _valueText.text = ActiveValue.ToString("F0");
         _valueText.color = TextColors[0];
         PlayerDone = false;
+        Wins = 0;
         //TogglePlayer(true);
         /*PlayCard_script[] pcs = _mainCardBoard.GetComponentsInChildren<PlayCard_script>();
         foreach (PlayCard_script pc in pcs)
@@ -68,7 +73,8 @@ public class TotalValueTracker_script : MonoBehaviour
         }
         else if (b)
         {
-            GameController.SwitchPlayer();
+            AllowMove = false;
+            //GameController.SwitchPlayer();
         }
         //next player
     }
@@ -82,6 +88,7 @@ public class TotalValueTracker_script : MonoBehaviour
         }
         PlayerDone = true;
         TogglePlayer(false);
+        Debug.Log("Player " +PlayerID +" Done");
         GameController.SwitchPlayer();
     }
 
@@ -89,6 +96,7 @@ public class TotalValueTracker_script : MonoBehaviour
     {
         _skipButton.interactable = b;
         _stayButton.interactable = b;
+        AllowMove = b;
     }
     
 }
