@@ -17,6 +17,7 @@ public class UIManager_script : MonoBehaviour
     private Image[] _playerIndicatorBackground;
     private GameController_script _gameController;
     public Color[] PlayerIndicatorColors;
+    public TextMeshProUGUI VersionText;
 
     void Start()
     {
@@ -28,6 +29,7 @@ public class UIManager_script : MonoBehaviour
         _playerIndicatorBackground = new Image[2];
         _playerIndicatorBackground[0] = PlayerIndicator[0].transform.parent.GetComponent<Image>();
         _playerIndicatorBackground[1] = PlayerIndicator[1].transform.parent.GetComponent<Image>();
+        VersionText.text = Application.version;
 
         ResetUI();
     }
