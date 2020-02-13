@@ -21,26 +21,42 @@ public class InputControls_script : MonoBehaviour
         _gameController = GetComponent<GameController_script>();
         m_Raycaster = FindObjectOfType<GraphicRaycaster>(); //finds the graphic raycaster
         m_EventSystem = FindObjectOfType<EventSystem>(); //finds the eventsystem
-        
     }
 
     
     void Update()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (_gameController.GameStage == 0)
         {
-            GetCard();
+            
         }
-        if (Input.GetButton("Fire1"))
+        else if (_gameController.GameStage == 1)
         {
-            MoveCard();
-        }
-        if (Input.GetButtonUp("Fire1"))
-        {
-            PlaceCard();
+            if (Input.GetButtonDown("Fire1"))
+            {
+                GetCard();
+            }
+
+            if (Input.GetButton("Fire1"))
+            {
+                MoveCard();
+            }
+
+            if (Input.GetButtonUp("Fire1"))
+            {
+                PlaceCard();
+            }
         }
     }
 
+    //Card Selection
+    void SelectCard()
+    {
+
+    }
+
+
+    //Main game controls
     void GetCard()
     {
         if (_playCard != null)

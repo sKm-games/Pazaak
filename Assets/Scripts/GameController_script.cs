@@ -14,6 +14,7 @@ public class GameController_script : MonoBehaviour
     public float SwitchDelay;
     private Coroutine _switchPlayer;
     public bool RoundDone;
+    public int GameStage; //used to control controls
     
     void Awake()
     {
@@ -26,6 +27,7 @@ public class GameController_script : MonoBehaviour
 
     void Start()
     {
+        GameStage = 1;
         _leftBoard.TogglePlayer(false);
         _rigthBoard.TogglePlayer(false);
         Invoke("GenerateDecks", 1f);
@@ -48,7 +50,7 @@ public class GameController_script : MonoBehaviour
     public void SwitchPlayer()
     {
         _switchPlayer = StartCoroutine(DoSwitchPlayer());
-        Debug.Log("Switch Player: ActivePlayer - " +ActivePlayer);
+        Debug.Log("Switch Player: ActivePlayer - " + ActivePlayer);
     }
 
     IEnumerator DoSwitchPlayer()
@@ -59,8 +61,14 @@ public class GameController_script : MonoBehaviour
             //StopCoroutine(_switchPlayer);
             yield break;
         }
+
         _leftBoard.TogglePlayer(false);
         _rigthBoard.TogglePlayer(false);
+        if (_leftBoard.PlayerDone && _rigthBoard.PlayerDone)
+        {
+            CompareScore();
+            yield break;
+        }
         yield return new WaitForSeconds(SwitchDelay);
         Debug.Log("Do Switch Player");
         if (_leftBoard.PlayerDone && !_rigthBoard.PlayerDone)
@@ -71,7 +79,7 @@ public class GameController_script : MonoBehaviour
         {
             ActivePlayer = 0;
         }
-        else if((_leftBoard.ActiveValue > MaxValue || _rigthBoard.ActiveValue > MaxValue) || (_leftBoard.PlayerDone && _rigthBoard.PlayerDone))
+        else if((_leftBoard.ActiveValue > MaxValue || _rigthBoard.ActiveValue > MaxValue))
         {
             RoundDone = true;
             CompareScore();

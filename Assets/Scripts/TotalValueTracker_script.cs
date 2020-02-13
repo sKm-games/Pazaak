@@ -22,6 +22,8 @@ public class TotalValueTracker_script : MonoBehaviour
     private PlayerDeckMananger_script _playerDeckMananger;
     public Transform DiscardPile;
     private GameObject _playerDoneScreen;
+    private Image _playerIndicator;
+    private UIManager_script _uiManager;
 
     void Awake()
     {
@@ -32,6 +34,9 @@ public class TotalValueTracker_script : MonoBehaviour
         _handCardBoard = this.transform.GetChild(1);
         _playerDeckMananger = GetComponent<PlayerDeckMananger_script>();
         _playerDoneScreen = this.transform.GetChild(2).GetChild(3).gameObject;
+        
+        _uiManager = GameController.GetComponent<UIManager_script>();
+        _playerIndicator = _uiManager.PlayerIndicator[PlayerID];
         ResetValues();
     }
 
@@ -93,10 +98,11 @@ public class TotalValueTracker_script : MonoBehaviour
             Debug.Log("TotalValueTracker_script: SetPlayerDone: Wrong Player " +PlayerID+"/"+GameController.ActivePlayer);
             return;
         }
+        _uiManager.SetPlayerDone(PlayerID);
         _playerDoneScreen.SetActive(true);
         PlayerDone = true;
         TogglePlayer(false);
-        Debug.Log("Player " +PlayerID +" Done");
+        Debug.Log("TotalValueTracker_script: SetPlayerDone: set player done ID - " + PlayerID);
         GameController.SwitchPlayer();
     }
 

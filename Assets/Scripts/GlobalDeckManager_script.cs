@@ -44,7 +44,7 @@ public class GlobalDeckManager_script : MonoBehaviour
         PlayCard_script pc = card.GetComponent<PlayCard_script>();
         int i = _activeDeck[0];
         pc.Config(_gameController.ActivePlayer,i, CardColor,_gameController);
-        Debug.Log("GlobalDeck: Add card to - " +_gameController.ActivePlayer);
+        Debug.Log("GlobalDeck: Add card to - " + _gameController.ActivePlayer + "- card " + pc.Value);
         pc.PlaceCard(spawn, false);
         _activeDeck.RemoveAt(0);
     }

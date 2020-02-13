@@ -9,8 +9,9 @@ public class AIMananger_script : MonoBehaviour
     public TotalValueTracker_script PlayerBoard;
     private PlayerDeckMananger_script _aiDeck;
     private GameController_script _gameController;
-    public float MoveTime;
-    public int EndOffset;
+    public int MoveTime;
+    public int EndOffset; //how close to 20 the AI will try;
+    public float RiskValue; //how risky the AI is
     private GameObject _buttonHolder;
     private Coroutine _determin;
     private Coroutine _moveCard;
@@ -31,10 +32,188 @@ public class AIMananger_script : MonoBehaviour
 
     public void DeterminPlay()
     {
-        _determin = StartCoroutine(DoDeterminPlay());
+        //_determin = StartCoroutine(DoDeterminPlay());
+        _determin = StartCoroutine(DoDeterminePlay());
     }
 
-    IEnumerator DoDeterminPlay()
+    IEnumerator DoDeterminePlay() //check for play
+    {
+        float rWait = Random.Range(0.5f, 1f);
+        yield return new WaitForSeconds(rWait);
+        PlayCard_script tempCard = null;
+        PlayCard_script drawCard = null;
+
+        if (AIBoard.ActiveValue > _gameController.MaxValue) //Active value over max, check for minus card
+        {
+            tempCard = CheckOverMax();
+            if (tempCard == null) //No card to get lower the max
+            {
+                AIBoard.SetPlayerDone();
+            }
+            else //found card play it
+            {
+                Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
+                _moveCard = StartCoroutine(MoveCard(tempCard));
+                yield break;
+            }
+        }
+
+        //player done check higher and less 20
+        if (PlayerBoard.PlayerDone)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: Player done check");
+            if (AIBoard.ActiveValue > PlayerBoard.ActiveValue) //random card won the game
+            {
+                Debug.Log("AIMananger_script: DoDeterminePlay: Random card fun");
+                AIBoard.SetPlayerDone();
+                yield break;
+            }
+            CheckPlayerDone(out tempCard, out drawCard);
+        }
+
+        if (tempCard != null)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
+            _moveCard = StartCoroutine(MoveCard(tempCard));
+            yield break;
+        }
+
+        //check able to get 20
+        Debug.Log("AIMananger_script: DoDeterminePlay: check for max");
+        tempCard = CheckMaxValue();
+
+        if (tempCard != null)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
+            _moveCard = StartCoroutine(MoveCard(tempCard));
+            yield break;
+        }
+
+        //check close to max
+        Debug.Log("AIMananger_script: DoDeterminePlay: check close to max");
+        tempCard = CheckCloseMaxValue();
+
+        if (tempCard != null)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
+            _moveCard = StartCoroutine(MoveCard(tempCard));
+            yield break;
+        }
+
+        if (PlayerBoard.PlayerDone && drawCard != null) //not possible to win try for a draw
+        {
+            int risk = Random.Range(0, 100);
+            if (risk > RiskValue) //AI will not risk a new card, goes for draw
+            {
+                Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
+                _moveCard = StartCoroutine(MoveCard(tempCard));
+                yield break;
+            }
+        }
+
+        //need to check max
+
+        Debug.Log("AIMananger_script: DoDeterminePlay: no valid card found, skip");
+        //Sound effect or something
+        _gameController.SwitchPlayer();
+    }
+
+    void CheckPlayerDone(out PlayCard_script tempCard, out PlayCard_script drawCard) //check higher if player done and for draw
+    {
+
+        tempCard = null;
+        drawCard = null;
+        foreach (PlayCard_script card in _aiDeck.ActiveCards)
+        {
+            if (PlayerBoard.PlayerDone)
+            {
+                int diffValue = (card.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+                if (diffValue < 0) //avoid draw
+                {
+                    continue;
+                }
+                if (diffValue == 0)
+                {
+                    drawCard = card;
+                }
+                if (tempCard == null)
+                {
+                    tempCard = card;
+                    continue;
+                }
+                //find closes to player
+                int tempDiffValue = (tempCard.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+                if (diffValue < tempDiffValue)
+                {
+                    tempCard = card;
+                    continue;
+                }
+            }
+        }
+    }
+
+    PlayCard_script CheckMaxValue() //find max
+    {
+        PlayCard_script tempCard = null;
+
+        foreach (PlayCard_script card in _aiDeck.ActiveCards)
+        {
+            int totalValue = card.Value + AIBoard.ActiveValue;
+            if (totalValue == _gameController.MaxValue)
+            {
+                tempCard = card;
+                break;
+            }
+        }
+
+        return tempCard;
+    }
+
+    PlayCard_script CheckCloseMaxValue() //find closes to max
+    {
+        PlayCard_script tempCard = null;
+
+        foreach (PlayCard_script card in _aiDeck.ActiveCards)
+        {
+            int totalValue = card.Value + AIBoard.ActiveValue;
+            int tempMax = _gameController.MaxValue - EndOffset;
+
+            if (totalValue >= tempMax && totalValue < _gameController.MaxValue && totalValue > PlayerBoard.ActiveValue)
+            {
+                if (tempCard == null)
+                {
+                    tempCard = card;
+                    continue;
+                }
+                else if (card.Value > tempCard.Value)
+                {
+                    tempCard = card;
+                    continue;
+                }
+            }
+        }
+
+        return tempCard;
+    }
+
+    PlayCard_script CheckOverMax()
+    {
+        PlayCard_script tempCard = null;
+
+        foreach (PlayCard_script card in _aiDeck.ActiveCards)
+        {
+            int totalValue = AIBoard.ActiveValue - card.Value;
+            if (totalValue <= _gameController.MaxValue)
+            {
+                tempCard = card;
+                break;
+            }
+        }
+
+        return tempCard;
+    }
+
+    IEnumerator DoDeterminPlay() //old, broken.
     {
         debugTrack++;
         Debug.Log("AI Determin PLay - " +debugTrack);
@@ -91,8 +270,9 @@ public class AIMananger_script : MonoBehaviour
         _gameController.SwitchPlayer();
     }
 
-    IEnumerator MoveCard(PlayCard_script pc)
+    IEnumerator MoveCard(PlayCard_script pc) //look for valid slot and move card
     {
+        Debug.Log("AIMananger_script: MoveCard: Start");
         if (_gameController.RoundDone)
         {
             //round over
@@ -100,6 +280,7 @@ public class AIMananger_script : MonoBehaviour
             yield break;
         }
         Transform slot = null;
+        Debug.Log("AIMananger_script: MoveCard: find slot");
         foreach (Transform t in AIBoard._mainCardBoard)
         {
             if (t.childCount == 0)
@@ -110,12 +291,13 @@ public class AIMananger_script : MonoBehaviour
         }
         if (slot == null)
         {
+            Debug.Log("AIMananger_script: MoveCard: no valid slot");
             //no valid slot left
             AIBoard.SetPlayerDone();
             // StopCoroutine(_moveCard);
             yield break;
         }
-
+        Debug.Log("AIMananger_script: MoveCard: move card");
         pc.transform.DOMove(slot.position, MoveTime);
         yield return new WaitForSeconds(MoveTime);
         pc.PlaceCard(slot);

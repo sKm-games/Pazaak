@@ -14,7 +14,9 @@ public class UIManager_script : MonoBehaviour
     public Image[] LeftRoundCounter;
     public Image[] RightRoundCounter;
     public Image[] PlayerIndicator;
+    private Image[] _playerIndicatorBackground;
     private GameController_script _gameController;
+    public Color[] PlayerIndicatorColors;
 
     void Start()
     {
@@ -23,15 +25,19 @@ public class UIManager_script : MonoBehaviour
         _roundEndButton = EndGameScreen.transform.GetChild(3).GetChild(0).GetComponent<Button>();
         _roundEndButtonText = _roundEndButton.GetComponentInChildren<TextMeshProUGUI>();
         _gameController = GetComponent<GameController_script>();
+        _playerIndicatorBackground = new Image[2];
+        _playerIndicatorBackground[0] = PlayerIndicator[0].transform.parent.GetComponent<Image>();
+        _playerIndicatorBackground[1] = PlayerIndicator[1].transform.parent.GetComponent<Image>();
+
         ResetUI();
     }
 
     public void ToggleEndScreen(bool b, bool r, string t = null, string s = null)
     {
-        
         EndGameScreen.SetActive(b);
         if (!b) //ui off skip rest
         {
+            RestPlayerIndicators();
             return;
         }
         _endGameTitleText.text = t;
@@ -81,5 +87,17 @@ public class UIManager_script : MonoBehaviour
         PlayerIndicator[1].enabled = false;
 
         PlayerIndicator[i].enabled = true;
+    }
+
+    public void SetPlayerDone(int id)
+    {
+        PlayerIndicator[id].enabled = false;
+        _playerIndicatorBackground[id].color = PlayerIndicatorColors[1];
+    }
+
+    void RestPlayerIndicators()
+    {
+        _playerIndicatorBackground[0].color = PlayerIndicatorColors[0];
+        _playerIndicatorBackground[1].color = PlayerIndicatorColors[0];
     }
 }
