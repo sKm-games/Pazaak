@@ -17,8 +17,8 @@ public class GlobalDeckManager_script : MonoBehaviour
     void Start()
     {
         _gameController = GetComponent<GameController_script>();
-        _leftBoard = _gameController._leftBoard;
-        _rigthBoard = _gameController._rigthBoard;
+        _leftBoard = _gameController.LeftBoard;
+        _rigthBoard = _gameController.RightBoard;
         _leftMainCardBoard = _leftBoard.transform.GetChild(0);
         _rigthMainCardBoard = _rigthBoard.transform.GetChild(0);
     }

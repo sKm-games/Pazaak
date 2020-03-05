@@ -4145,8 +4145,8 @@ MonoBehaviour:
   MaxValue: 20
   ActivePlayer: 0
   MainCanvas: {fileID: 1269769916}
-  _leftBoard: {fileID: 0}
-  _rigthBoard: {fileID: 0}
+  LeftBoard: {fileID: 508471581}
+  RightBoard: {fileID: 1675544086}
   AiMananger: {fileID: 550003537}
   SwitchDelay: 1
   RoundDone: 0
