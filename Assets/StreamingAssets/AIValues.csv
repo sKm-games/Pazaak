@@ -1,0 +1,4 @@
+﻿Difficulty;Name;DeckValues;EndValues;RiskValue
+Easy;Microsoft Sam;5,6,7,8,9,5,6,7,8,9;10;50
+Medium;Holly;5,6,7,8,9,5,6,7,8,9;5;25
+Hard;Skynet;5,6,7,8,9,5,6,7,8,9;2;10

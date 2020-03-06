@@ -10,23 +10,29 @@ public class AIMananger_script : MonoBehaviour
     private PlayerDeckMananger_script _aiDeck;
     private GameController_script _gameController;
     public int MoveTime;
-    public int EndOffset; //how close to 20 the AI will try;
-    public float RiskValue; //how risky the AI is
     private GameObject _buttonHolder;
     private Coroutine _determin;
     private Coroutine _moveCard;
+    
+    public AISelecter_script.AIStatesClass AIStates;
 
     private int debugTrack;
+
     void Start()
     {
-        ConfigAI();
+        //ConfigAI();
     }
 
-    public void ConfigAI() //when choosing AI
+    public void ConfigAI(AISelecter_script.AIStatesClass aiStates) //when choosing AI
     {
+        AIStates = new AISelecter_script.AIStatesClass();
+        AIStates = aiStates;
+
         _aiDeck = AIBoard.GetComponent<PlayerDeckMananger_script>();
         _gameController = AIBoard.GameController;
         _buttonHolder = AIBoard.transform.GetChild(3).gameObject;
+        AIBoard.PlayerName = AIStates.AIName;
+        _aiDeck.SetPlayerDeck(AIStates.DeckValues);
         _buttonHolder.SetActive(false);
     }
 
@@ -40,6 +46,10 @@ public class AIMananger_script : MonoBehaviour
     {
         float rWait = Random.Range(0.5f, 1f);
         yield return new WaitForSeconds(rWait);
+        if (AIBoard.PlayerDone)
+        {
+            yield break;
+        }
         PlayCard_script tempCard = null;
         PlayCard_script drawCard = null;
 
@@ -100,10 +110,10 @@ public class AIMananger_script : MonoBehaviour
             yield break;
         }
 
-        if (PlayerBoard.PlayerDone && drawCard != null) //not possible to win try for a draw
+        if (PlayerBoard.PlayerDone && (drawCard != null || tempCard != null)) //not possible to win try for a draw
         {
             int risk = Random.Range(0, 100);
-            if (risk > RiskValue) //AI will not risk a new card, goes for draw
+            if (risk > AIStates.RiskValue) //AI will not risk a new card, goes for draw
             {
                 Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
                 _moveCard = StartCoroutine(MoveCard(tempCard));
@@ -120,22 +130,29 @@ public class AIMananger_script : MonoBehaviour
 
     void CheckPlayerDone(out PlayCard_script tempCard, out PlayCard_script drawCard) //check higher if player done and for draw
     {
-
         tempCard = null;
         drawCard = null;
+
+        int risk = Random.Range(0, 100);
+        if (risk < AIStates.RiskValue || (AIBoard.ActiveValue + (10 - AIStates.EndOffset)) > _gameController.MaxValue) //will risk a random card
+        {
+            return;
+        }
+
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
             if (PlayerBoard.PlayerDone)
             {
                 int diffValue = (card.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
-                if (diffValue < 0) //avoid draw
-                {
-                    continue;
-                }
-                if (diffValue == 0)
+                if (diffValue <= 0) //avoid draw
                 {
                     drawCard = card;
+                    continue;
                 }
+                /*if (diffValue == 0)
+                {
+                    drawCard = card;
+                }*/
                 if (tempCard == null)
                 {
                     tempCard = card;
@@ -176,7 +193,7 @@ public class AIMananger_script : MonoBehaviour
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
             int totalValue = card.Value + AIBoard.ActiveValue;
-            int tempMax = _gameController.MaxValue - EndOffset;
+            int tempMax = _gameController.MaxValue - AIStates.EndOffset;
 
             if (totalValue >= tempMax && totalValue < _gameController.MaxValue && totalValue > PlayerBoard.ActiveValue)
             {
@@ -202,7 +219,7 @@ public class AIMananger_script : MonoBehaviour
 
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
-            int totalValue = AIBoard.ActiveValue - card.Value;
+            int totalValue = AIBoard.ActiveValue + card.Value;
             if (totalValue <= _gameController.MaxValue)
             {
                 tempCard = card;
@@ -249,7 +266,7 @@ public class AIMananger_script : MonoBehaviour
             }
             //check close to max
             
-            if (playTotal <= EndOffset || (playTotal > PlayerBoard.ActiveValue && PlayerBoard.PlayerDone))
+            if (playTotal <= AIStates.EndOffset || (playTotal > PlayerBoard.ActiveValue && PlayerBoard.PlayerDone))
             {
                 pc = fpc;
                 break;
@@ -299,6 +316,7 @@ public class AIMananger_script : MonoBehaviour
         }
         Debug.Log("AIMananger_script: MoveCard: move card");
         pc.transform.DOMove(slot.position, MoveTime);
+        _aiDeck.RemoveCard(pc);
         yield return new WaitForSeconds(MoveTime);
         pc.PlaceCard(slot);
         /*if (AIBoard.ActiveValue == _gameController.MaxValue - EndOffset) //close to max, end player
@@ -307,7 +325,10 @@ public class AIMananger_script : MonoBehaviour
             StopCoroutine(_moveCard);
         }*/
         //_gameController.SwitchPlayer();
-        AIBoard.SetPlayerDone();
+        if (AIBoard.ActiveValue != _gameController.MaxValue)
+        {
+            AIBoard.SetPlayerDone();
+        }
     }
 
     public void RoundOver()

@@ -66,6 +66,7 @@ public class PlayCard_script : MonoBehaviour
 
         this.transform.position = t.position;
         this.transform.SetParent(t);
+        this.transform.localScale = new Vector3(1,1,1); //to fix scaling bug
         if (_totalValueTracker == null)
         {
             _totalValueTracker = this.transform.GetComponentInParent<TotalValueTracker_script>();
@@ -83,7 +84,7 @@ public class PlayCard_script : MonoBehaviour
         StartCoroutine("DoRemoveCard");
     }
 
-    IEnumerator DoRemoveCard()
+    IEnumerator DoRemoveCard() //move to discard pile
     {
         this.transform.DOMove(_discardPile.position, DiscardTime);
         float r = Random.Range(-20, 20);

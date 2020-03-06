@@ -18,6 +18,11 @@ public class PlayerDeckMananger_script : MonoBehaviour
         _cardSlots = this.transform.GetChild(1);
     }
 
+    public void SetPlayerDeck(List<int> deckValues)
+    {
+        PlayerDeck = new List<int>(deckValues);
+    }
+
     public void GenereateDeck()
     {
         _activeDeck = PlayerDeck;
@@ -31,6 +36,14 @@ public class PlayerDeckMananger_script : MonoBehaviour
             pc.PlaceCard(t, false, false);
             pc.Config(_totalValueTracker.PlayerID, v, CardColors, _totalValueTracker.GameController);
             ActiveCards.Add(pc);
+        }
+    }
+
+    public void RemoveCard(PlayCard_script pc)
+    {
+        if (ActiveCards.Contains(pc))
+        {
+            ActiveCards.Remove(pc);
         }
     }
 }

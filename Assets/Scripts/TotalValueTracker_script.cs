@@ -8,6 +8,7 @@ using Debug = UnityEngine.Debug;
 public class TotalValueTracker_script : MonoBehaviour
 {
     public int PlayerID;
+    public string PlayerName;
     public int ActiveValue;
     public bool AllowMove;
     private TextMeshProUGUI _valueText;
@@ -37,7 +38,7 @@ public class TotalValueTracker_script : MonoBehaviour
         
         _uiManager = GameController.GetComponent<UIManager_script>();
         _playerIndicator = _uiManager.PlayerIndicator[PlayerID];
-        ResetValues();
+        ResetValues(true);
     }
 
     public void GenerateDeck()
@@ -45,14 +46,17 @@ public class TotalValueTracker_script : MonoBehaviour
         _playerDeckMananger.GenereateDeck();
     }
 
-    public void ResetValues()
+    public void ResetValues(bool newGame)
     {
         ActiveValue = 0;
         _valueText.text = ActiveValue.ToString("F0");
         _valueText.color = TextColors[0];
         PlayerDone = false;
-        Wins = 0;
         _playerDoneScreen.SetActive(false);
+        if (newGame)
+        {
+            Wins = 0;
+        }
         //TogglePlayer(true);
         /*PlayCard_script[] pcs = _mainCardBoard.GetComponentsInChildren<PlayCard_script>();
         foreach (PlayCard_script pc in pcs)

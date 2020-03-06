@@ -16,25 +16,39 @@ public class UIManager_script : MonoBehaviour
     public Image[] PlayerIndicator;
     private Image[] _playerIndicatorBackground;
     private GameController_script _gameController;
+    private TotalValueTracker_script _leftBoard, _rightBoard;
     public Color[] PlayerIndicatorColors;
     public TextMeshProUGUI VersionText;
+    private TextMeshProUGUI[] _endGameLeftPlayerText;
+    private TextMeshProUGUI[] _endGameRightPlayerText;
+    private TextMeshProUGUI _leftPlayerName;
+    private TextMeshProUGUI _rightPlayerName;
 
     void Start()
     {
         _endGameText = EndGameScreen.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         _endGameTitleText = EndGameScreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        _roundEndButton = EndGameScreen.transform.GetChild(3).GetChild(0).GetComponent<Button>();
+        _roundEndButton = EndGameScreen.transform.GetChild(4).GetChild(0).GetComponent<Button>();
         _roundEndButtonText = _roundEndButton.GetComponentInChildren<TextMeshProUGUI>();
         _gameController = GetComponent<GameController_script>();
         _playerIndicatorBackground = new Image[2];
         _playerIndicatorBackground[0] = PlayerIndicator[0].transform.parent.GetComponent<Image>();
         _playerIndicatorBackground[1] = PlayerIndicator[1].transform.parent.GetComponent<Image>();
-        VersionText.text = Application.version;
+        _endGameLeftPlayerText = EndGameScreen.transform.GetChild(3).GetChild(0).GetComponentsInChildren<TextMeshProUGUI>();
+        _endGameRightPlayerText = EndGameScreen.transform.GetChild(3).GetChild(1).GetComponentsInChildren<TextMeshProUGUI>();
+
+        _leftBoard = _gameController.LeftBoard;
+        _rightBoard = _gameController.RightBoard;
+
+        _leftPlayerName = PlayerIndicator[0].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
+        _rightPlayerName = PlayerIndicator[1].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
 
         ResetUI();
+
+        VersionText.text = Application.version;
     }
 
-    public void ToggleEndScreen(bool b, bool r, string t = null, string s = null)
+    public void ToggleEndScreen(bool b, bool r, string t = null, string s = null, string leftScore = null, string rightScore = null)
     {
         EndGameScreen.SetActive(b);
         if (!b) //ui off skip rest
@@ -44,6 +58,14 @@ public class UIManager_script : MonoBehaviour
         }
         _endGameTitleText.text = t;
         _endGameText.text = s;
+
+        _endGameLeftPlayerText[0].text = _leftBoard.PlayerName;
+        _endGameLeftPlayerText[1].text = "Score\n" + _leftBoard.ActiveValue + " of " + _gameController.MaxValue;
+        _endGameLeftPlayerText[2].text = "Rounds\n" + _leftBoard.Wins + " of 3";
+
+        _endGameRightPlayerText[0].text = _rightBoard.PlayerName;
+        _endGameRightPlayerText[1].text = "Score\n" + _rightBoard.ActiveValue + " of " + _gameController.MaxValue;
+        _endGameRightPlayerText[2].text = "Rounds\n" + _rightBoard.Wins + " of 3";
 
         _roundEndButton.onClick.RemoveAllListeners();
 
@@ -101,5 +123,11 @@ public class UIManager_script : MonoBehaviour
     {
         _playerIndicatorBackground[0].color = PlayerIndicatorColors[0];
         _playerIndicatorBackground[1].color = PlayerIndicatorColors[0];
+    }
+
+    public void SetPlayerNames()
+    {
+        _leftPlayerName.text = _leftBoard.PlayerName;
+        _rightPlayerName.text = _rightBoard.PlayerName;
     }
 }
