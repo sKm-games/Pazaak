@@ -6,9 +6,9 @@ using UnityEngine;
 public class GlobalDeckManager_script : MonoBehaviour
 {
     public GameObject GlobalPlayCardPrefab;
-    public List<int> GlobalDeck;
+    public List<string> GlobalDeck;
     public int DeckSize;
-    private List<int> _activeDeck;
+    private List<string> _activeDeck;
     private Transform _leftMainCardBoard, _rigthMainCardBoard;
     private TotalValueTracker_script _leftBoard, _rigthBoard;
     private GameController_script _gameController;
@@ -25,7 +25,7 @@ public class GlobalDeckManager_script : MonoBehaviour
 
     public void GenerateGlobalDeck()
     {
-        _activeDeck = new List<int>();
+        _activeDeck = new List<string>();
         for (int i = 0; i < DeckSize; i++)
         {
             _activeDeck.AddRange(GlobalDeck);
@@ -42,8 +42,9 @@ public class GlobalDeckManager_script : MonoBehaviour
         }
         GameObject card = Instantiate(GlobalPlayCardPrefab);
         PlayCard_script pc = card.GetComponent<PlayCard_script>();
-        int i = _activeDeck[0];
-        pc.Config(_gameController.ActivePlayer,i, CardColor,_gameController);
+        //int i = _activeDeck[0];
+        string s = _activeDeck[0];
+        pc.Config(_gameController.ActivePlayer,s, CardColor,_gameController);
         //Debug.Log("GlobalDeck: Add card to - " + _gameController.ActivePlayer + "- card value" + pc.Value);
         pc.PlaceCard(spawn, false);
         _activeDeck.RemoveAt(0);

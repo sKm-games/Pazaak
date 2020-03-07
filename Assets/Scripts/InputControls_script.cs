@@ -74,10 +74,14 @@ public class InputControls_script : MonoBehaviour
             
             foreach (RaycastResult hit in results)
             {
-                 _playCard = hit.gameObject.GetComponent<PlayCard_script>();
+                if (hit.gameObject.GetComponent<Button>() != null)
+                {
+                    return;
+                }
+                 _playCard = hit.gameObject.transform.parent.GetComponent<PlayCard_script>();
                  if (_playCard != null)
                  {
-                     if (_playCard.ID != _gameController.ActivePlayer || _playCard.Placed)
+                     if (_playCard.PlayerID != _gameController.ActivePlayer || _playCard.Placed)
                      {
                          _playCard = null;
                          Debug.Log("InputControls_script: GetCard: wrong players card");

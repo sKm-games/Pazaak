@@ -25,6 +25,8 @@ public class TotalValueTracker_script : MonoBehaviour
     private GameObject _playerDoneScreen;
     private Image _playerIndicator;
     private UIManager_script _uiManager;
+    private List<PlayCard_script> _playedCards;
+    public bool TieBreaker;
 
     void Awake()
     {
@@ -44,10 +46,12 @@ public class TotalValueTracker_script : MonoBehaviour
     public void GenerateDeck()
     {
         _playerDeckMananger.GenereateDeck();
+        _playedCards = new List<PlayCard_script>();
     }
 
     public void ResetValues(bool newGame)
     {
+        _playedCards = new List<PlayCard_script>();
         ActiveValue = 0;
         _valueText.text = ActiveValue.ToString("F0");
         _valueText.color = TextColors[0];
@@ -65,9 +69,10 @@ public class TotalValueTracker_script : MonoBehaviour
         }*/
     }
 
-    public void IncreaceValue(int value, bool b = true)
+    public void IncreaceValue(PlayCard_script pc, bool playerCard = true)
     {
-        ActiveValue += value;
+        _playedCards.Add(pc);
+        ActiveValue += pc.Value;
         _valueText.text = ActiveValue.ToString("F0");
         if (ActiveValue == GameController.MaxValue)
         {
@@ -87,12 +92,32 @@ public class TotalValueTracker_script : MonoBehaviour
         {
             _valueText.color = TextColors[0];
         }
-        else if (b)
+        if (playerCard)
         {
             AllowMove = false;
             //GameController.SwitchPlayer();
         }
         //next player
+    }
+
+    public PlayCard_script GetLastCard()
+    {
+        return _playedCards[_playedCards.Count - 1];
+    }
+
+    public void FlipPlayedCards(int a, int b) //only flip specific cards
+    {
+        int newActiveValue = 0;
+        foreach (PlayCard_script pc in _playedCards)
+        {
+            if (pc.Value == a || pc.Value == b)
+            {
+                pc.ToggleValue();
+            }
+            newActiveValue += pc.Value; //recalcualte the total value
+        }
+        ActiveValue = newActiveValue;
+        _valueText.text = ActiveValue.ToString("F0");
     }
 
     public void SetPlayerDone()
@@ -115,6 +140,5 @@ public class TotalValueTracker_script : MonoBehaviour
         _skipButton.interactable = b;
         _stayButton.interactable = b;
         AllowMove = b;
-    }
-    
+    }    
 }

@@ -9,6 +9,7 @@ public class GameController_script : MonoBehaviour
     public int ActivePlayer;
     public GameObject MainCanvas;
     public TotalValueTracker_script LeftBoard, RightBoard;
+    private PlayerDeckMananger_script _leftDeck, _rightDeck;
     private UIManager_script _uiManager;
     private GlobalDeckManager_script _globalDeckManager;
     public AIMananger_script AiMananger;
@@ -21,6 +22,9 @@ public class GameController_script : MonoBehaviour
     {
         //LeftBoard = MainCanvas.transform.GetChild(1).GetChild(2).GetChild(4).GetComponent<TotalValueTracker_script>();
         //RightBoard = MainCanvas.transform.GetChild(1).GetChild(2).GetChild(5).GetComponent<TotalValueTracker_script>();
+        _leftDeck = LeftBoard.GetComponent<PlayerDeckMananger_script>();
+        _rightDeck = RightBoard.GetComponent<PlayerDeckMananger_script>();
+
         _uiManager = GetComponent<UIManager_script>();
         _globalDeckManager = GetComponent<GlobalDeckManager_script>();
         ActivePlayer = 1;
@@ -41,6 +45,32 @@ public class GameController_script : MonoBehaviour
         RightBoard.GenerateDeck();
         _globalDeckManager.GenerateGlobalDeck();
         _uiManager.SetPlayerNames();
+    }
+
+    void DetermingStartingPlayer()
+    {
+        int left = _leftDeck.FindHighstCard();
+        int right = _rightDeck.FindHighstCard();
+        if (left > right)
+        {
+            ActivePlayer = 1;
+        }
+        else if (left < right)
+        {
+            ActivePlayer = 0;
+        }
+        else if (left == right)
+        {
+            float r = Random.Range(0f, 1f);
+            if (r < 0.5f)
+            {
+                ActivePlayer = 1;
+            }
+            else
+            {
+                ActivePlayer = 0;
+            }
+        }
     }
 
     public void StartGame()
@@ -157,7 +187,22 @@ public class GameController_script : MonoBehaviour
         else if(LeftBoard.ActiveValue == RightBoard.ActiveValue || (LeftBoard.ActiveValue > MaxValue && RightBoard.ActiveValue > MaxValue)) //draw
         {
             t = "Round Over";
-            s = "Draw";
+            if (LeftBoard.TieBreaker && !RightBoard.TieBreaker)
+            {
+                s = "Tie break \n " + LeftBoard.PlayerName + " Wins!";
+            }
+            else if (!LeftBoard.TieBreaker && RightBoard.TieBreaker)
+            {
+                s = "Tie break \n " + RightBoard.PlayerName + " Wins!";
+            }
+            else if (LeftBoard.TieBreaker && RightBoard.TieBreaker)
+            {
+                s = "Double Tie Break\nDraw";
+            }
+            else
+            {
+                s = "Draw";
+            }
             _uiManager.ToggleEndScreen(true,true, t, s, leftScore, rightScore);
         }
     }
@@ -212,6 +257,7 @@ public class GameController_script : MonoBehaviour
         yield return new WaitForSeconds(1f);
         GenerateDecks();
         yield return new WaitForSeconds(1f);
+        DetermingStartingPlayer();
         _uiManager.ToggleEndScreen(false, false);
         _uiManager.ResetUI();
         StartGame();

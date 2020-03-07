@@ -5,12 +5,13 @@ using UnityEngine;
 public class PlayerDeckMananger_script : MonoBehaviour
 {
     public GameObject CardPrefab;
-    public List<int> PlayerDeck;
-    private List<int> _activeDeck;
+    public List<string> PlayerDeck;
+    private List<string> _activeDeck;
     private Transform _cardSlots;
     private TotalValueTracker_script _totalValueTracker;
     public Color[] CardColors;
     public List<PlayCard_script> ActiveCards;
+    private bool isAI;
     
     void Start()
     {
@@ -18,9 +19,10 @@ public class PlayerDeckMananger_script : MonoBehaviour
         _cardSlots = this.transform.GetChild(1);
     }
 
-    public void SetPlayerDeck(List<int> deckValues)
+    public void SetPlayerDeck(List<string> deckValues, bool b = false)
     {
-        PlayerDeck = new List<int>(deckValues);
+        PlayerDeck = new List<string>(deckValues);
+        isAI = b;
     }
 
     public void GenereateDeck()
@@ -29,12 +31,13 @@ public class PlayerDeckMananger_script : MonoBehaviour
         _activeDeck.Shuffle();
         foreach (Transform t in _cardSlots)
         {
-            int v = _activeDeck[0];
+            //int v = _activeDeck[0];
+            string s = _activeDeck[0];
             _activeDeck.RemoveAt(0);
             GameObject go = Instantiate(CardPrefab);
             PlayCard_script pc = go.GetComponent<PlayCard_script>();
             pc.PlaceCard(t, false, false);
-            pc.Config(_totalValueTracker.PlayerID, v, CardColors, _totalValueTracker.GameController);
+            pc.Config(_totalValueTracker.PlayerID, s, CardColors, _totalValueTracker.GameController,isAI);
             ActiveCards.Add(pc);
         }
     }
@@ -46,4 +49,19 @@ public class PlayerDeckMananger_script : MonoBehaviour
             ActiveCards.Remove(pc);
         }
     }
+
+    public int FindHighstCard()
+    {
+        int i = 0;
+        foreach (PlayCard_script pc in ActiveCards)
+        {
+            if (pc.Value > i)
+            {
+                i = pc.Value;
+            }
+        }
+
+        return i;
+    }
+
 }

@@ -32,8 +32,9 @@ public class AIMananger_script : MonoBehaviour
         _gameController = AIBoard.GameController;
         _buttonHolder = AIBoard.transform.GetChild(3).gameObject;
         AIBoard.PlayerName = AIStates.AIName;
-        _aiDeck.SetPlayerDeck(AIStates.DeckValues);
+        _aiDeck.SetPlayerDeck(AIStates.DeckValues, true);
         _buttonHolder.SetActive(false);
+
     }
 
     public void DeterminPlay()
@@ -144,6 +145,24 @@ public class AIMananger_script : MonoBehaviour
             if (PlayerBoard.PlayerDone)
             {
                 int diffValue = (card.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+
+                if (card.Ability == "Normal")
+                {
+                    diffValue = (card.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+                }
+                else if (card.Ability == "PlusMinus")
+                {
+                    if (card.Value < 0)
+                    {
+                        card.ToggleValue();
+                    }
+                    diffValue = (card.Value + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+                }
+                else if (card.Ability == "Double")
+                {
+                    PlayCard_script pc = AIBoard.GetLastCard();
+                    diffValue = ((pc.Value * 2) + AIBoard.ActiveValue) - PlayerBoard.ActiveValue;
+                }
                 if (diffValue <= 0) //avoid draw
                 {
                     drawCard = card;
@@ -175,7 +194,24 @@ public class AIMananger_script : MonoBehaviour
 
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
-            int totalValue = card.Value + AIBoard.ActiveValue;
+            int totalValue = 0;
+            if (card.Ability == "Normal")
+            {
+                totalValue = card.Value + AIBoard.ActiveValue;
+            }
+            else if (card.Ability == "PlusMinus")
+            {
+                if (card.Value < 0)
+                {
+                    card.ToggleValue();
+                }
+                totalValue = card.Value + AIBoard.ActiveValue;
+            }
+            else if (card.Ability == "Double")
+            {
+                PlayCard_script pc = AIBoard.GetLastCard();
+                totalValue = (pc.Value * 2) + AIBoard.ActiveValue;
+            }
             if (totalValue == _gameController.MaxValue)
             {
                 tempCard = card;
@@ -192,9 +228,25 @@ public class AIMananger_script : MonoBehaviour
 
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
-            int totalValue = card.Value + AIBoard.ActiveValue;
+            int totalValue = 0;
             int tempMax = _gameController.MaxValue - AIStates.EndOffset;
-
+            if (card.Ability == "Normal")
+            {
+                totalValue = card.Value + AIBoard.ActiveValue;
+            }
+            else if (card.Ability == "PlusMinus")
+            {
+                if (card.Value < 0)
+                {
+                    card.ToggleValue();
+                }
+                totalValue = card.Value + AIBoard.ActiveValue;
+            }
+            else if (card.Ability == "Double")
+            {
+                PlayCard_script pc = AIBoard.GetLastCard();
+                totalValue = (pc.Value * 2) + AIBoard.ActiveValue;
+            }
             if (totalValue >= tempMax && totalValue < _gameController.MaxValue && totalValue > PlayerBoard.ActiveValue)
             {
                 if (tempCard == null)
@@ -219,14 +271,25 @@ public class AIMananger_script : MonoBehaviour
 
         foreach (PlayCard_script card in _aiDeck.ActiveCards)
         {
-            int totalValue = AIBoard.ActiveValue + card.Value;
+            int totalValue = 0;
+            if (card.Ability == "Normal")
+            {
+                totalValue = AIBoard.ActiveValue + card.Value;
+            }
+            else if (card.Ability == "PlusMinus")
+            {
+                if (card.Value > 0) //toggle value if card is PlusMinus card
+                {
+                    card.ToggleValue();
+                }
+                totalValue = AIBoard.ActiveValue + card.Value;
+            }
             if (totalValue <= _gameController.MaxValue)
             {
                 tempCard = card;
                 break;
             }
         }
-
         return tempCard;
     }
 
@@ -315,6 +378,7 @@ public class AIMananger_script : MonoBehaviour
             yield break;
         }
         Debug.Log("AIMananger_script: MoveCard: move card");
+        pc.ToggleCardBack(false);
         pc.transform.DOMove(slot.position, MoveTime);
         _aiDeck.RemoveCard(pc);
         yield return new WaitForSeconds(MoveTime);

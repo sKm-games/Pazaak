@@ -9,7 +9,7 @@ public class AISelecter_script : MonoBehaviour
     {
         public string Difficulty;
         public string AIName;
-        public List<int> DeckValues;
+        public List<string> DeckValues;
         public int EndOffset;
         public float RiskValue;
     }
@@ -43,11 +43,12 @@ public class AISelecter_script : MonoBehaviour
             newAI.Difficulty = value.Values[0];
             newAI.AIName = value.Values[1];
             string[] deckValues = value.Values[2].Split(',');
-            newAI.DeckValues = new List<int>();
+            newAI.DeckValues = new List<string>();
             foreach (string card in deckValues)
             {
-                int cardValue = int.Parse(card);
-                newAI.DeckValues.Add(cardValue);
+                //int cardValue = int.Parse(card);
+                //newAI.DeckValues.Add(cardValue);
+                newAI.DeckValues.Add(card);
             }
 
             newAI.EndOffset = int.Parse(value.Values[3]);

@@ -19,7 +19,7 @@ public class MainCardHolder_script : MonoBehaviour
         {
             return false;
         }
-        if (pc.ID != ID || _playCard != null) //wrong slot or slot occupide
+        if (pc.PlayerID != ID || _playCard != null) //wrong slot or slot occupide
         {
             return false;
         }
