@@ -27,14 +27,13 @@ public class GameController_script : MonoBehaviour
 
         _uiManager = GetComponent<UIManager_script>();
         _globalDeckManager = GetComponent<GlobalDeckManager_script>();
-        ActivePlayer = 1;
     }
 
     void Start()
     {
-        GameStage = 1;
-        LeftBoard.TogglePlayer(false);
-        RightBoard.TogglePlayer(false);
+        //GameStage = 1;
+        //LeftBoard.TogglePlayer(false);
+        //RightBoard.TogglePlayer(false);
         //Invoke("GenerateDecks", 2f);
         //Invoke("StartGame", 4f);
     }
@@ -122,6 +121,9 @@ public class GameController_script : MonoBehaviour
         {
             ActivePlayer = (ActivePlayer == 0) ? 1 : 0;
         }
+        _uiManager.SwitchPlayer(ActivePlayer);
+        _globalDeckManager.PlaceGlobalCard(ActivePlayer);
+        yield return new WaitForSeconds(_globalDeckManager.MoveTime);
         if (ActivePlayer == 0)
         {
             LeftBoard.TogglePlayer(true);
@@ -132,8 +134,6 @@ public class GameController_script : MonoBehaviour
             RightBoard.TogglePlayer(true);
             LeftBoard.TogglePlayer(false);
         }
-        _uiManager.SwitchPlayer(ActivePlayer);
-        _globalDeckManager.PlaceGlobalCard(ActivePlayer);
         if (ActivePlayer == AiMananger.AIBoard.PlayerID)
         {
             AiMananger.DeterminPlay();
@@ -241,6 +241,9 @@ public class GameController_script : MonoBehaviour
 
     IEnumerator StartNewGame()
     {
+        LeftBoard.TogglePlayer(false);
+        RightBoard.TogglePlayer(false);
+        _uiManager.ToggleLoadingScreen(true);
         LeftBoard.ResetValues(true);
         RightBoard.ResetValues(true);
         List<PlayCard_script> pcs = new List<PlayCard_script>();
@@ -260,7 +263,9 @@ public class GameController_script : MonoBehaviour
         DetermingStartingPlayer();
         _uiManager.ToggleEndScreen(false, false);
         _uiManager.ResetUI();
+        GameStage = 1;
         StartGame();
+        _uiManager.ToggleLoadingScreen(false);
     }
     
 }

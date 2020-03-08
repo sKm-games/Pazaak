@@ -14,7 +14,7 @@ public class PlayCard_script : MonoBehaviour
     private TextMeshProUGUI _valueText;
     public bool Placed;
     private TotalValueTracker_script _totalValueTracker;
-    private GameController_script _gameController;
+    [SerializeField]private GameController_script _gameController;
     private Transform _discardPile;
     public float DiscardTime;
     private Image _backgroundImage;
@@ -24,15 +24,8 @@ public class PlayCard_script : MonoBehaviour
     public string Ability;
     private bool _playerCard;
     private Image _cardBackImage;
+    private int[] _flipValue;
 
-    void Awake()
-    {
-        _abilityButton = GetComponentInChildren<Button>();
-        _abilityButtonText = _abilityButton.GetComponentInChildren<TextMeshProUGUI>();
-        _cardBackImage = this.transform.GetChild(2).GetComponent<Image>();
-    }
-
-   
     public void BounceBack()
     {
         Debug.Log("PlayCard_script: BounceBack: Start");
@@ -45,26 +38,38 @@ public class PlayCard_script : MonoBehaviour
         _startingTransform = transform.parent;
         _startPos = this.transform.localPosition;
         _valueText = this.transform.GetChild(0).GetComponentInChildren<TextMeshProUGUI>();
-        _totalValueTracker = this.transform.GetChild(0).GetComponentInParent<TotalValueTracker_script>();
         _backgroundImage = this.transform.GetChild(0).GetChild(0).GetComponent<Image>();
+        
+        _abilityButton = GetComponentInChildren<Button>();
+        _abilityButtonText = _abilityButton.GetComponentInChildren<TextMeshProUGUI>();
+        _cardBackImage = this.transform.GetChild(2).GetComponent<Image>();
+
         _cardBackImage.gameObject.SetActive(hideCard);
-        if (_totalValueTracker != null)
-        {
-            _discardPile = _totalValueTracker.DiscardPile;
-        }
+
         _gameController = gc;
+        if (_gameController.GameStage == 1)
+        {
+            _totalValueTracker = this.transform.GetChild(0).GetComponentInParent<TotalValueTracker_script>();
+            if (_totalValueTracker != null)
+            {
+                _discardPile = _totalValueTracker.DiscardPile;
+            }
+        }
         PlayerID = id;
         SetValuesAndAbility(s);
         _cardColors = new List<Color>(c);
         SetValueText();
-        CheckAbilities();
+        CheckAbilities(s);
     }
 
     void SetValuesAndAbility(string s)
     {
-        Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s);
+        //Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s);
         string[] tempString = s.Split('|');
-        Value = int.Parse(tempString[1]);
+        if (!tempString[1].Contains("/"))
+        {
+            Value = int.Parse(tempString[1]);
+        }
         switch (tempString[0])
         {
             case "N":
@@ -81,6 +86,10 @@ public class PlayCard_script : MonoBehaviour
                 break;
             case "F":
                 Ability = "Flip";
+                string [] flipValues = tempString[1].Split('/');
+                _flipValue = new int[2];
+                _flipValue[0] = int.Parse(flipValues[0]);
+                _flipValue[1] = int.Parse(flipValues[1]);
                 break;
             case "PM21":
                 Ability = "PlusMinus21";
@@ -88,7 +97,7 @@ public class PlayCard_script : MonoBehaviour
         }
     }
 
-    void CheckAbilities()
+    void CheckAbilities(string s)
     {
         switch (Ability)
         {
@@ -133,7 +142,7 @@ public class PlayCard_script : MonoBehaviour
                 _abilityButton.gameObject.SetActive(false);
                 _abilityButton.onClick.RemoveAllListeners();
                 Value = 0;
-                _valueText.text = "+-2/4";
+                _valueText.text = "+-" +_flipValue[0]+"/"+_flipValue[1];
                 break;
 
             case "PlusMinus21":
@@ -172,6 +181,12 @@ public class PlayCard_script : MonoBehaviour
         this.transform.position = t.position;
         this.transform.SetParent(t);
         this.transform.localScale = new Vector3(1,1,1); //to fix scaling bug
+
+        Debug.Log("GC - " +_gameController.transform.name);
+        if (_gameController.GameStage == 0) //placing card during deck building
+        {
+            return;
+        }
         _playerCard = b;
         if (_totalValueTracker == null)
         {
@@ -230,9 +245,9 @@ public class PlayCard_script : MonoBehaviour
     {
         //Double last played card
         PlayCard_script lastCard = _totalValueTracker.GetLastCard();
-        lastCard.Value *= 2;
         _totalValueTracker.IncreaceValue(lastCard,_playerCard);
-
+        lastCard.Value *= 2;
+        lastCard.SetValueText();
     }
 
     void TieBreaker()
@@ -247,7 +262,7 @@ public class PlayCard_script : MonoBehaviour
 
     void Flip()
     {
-        _totalValueTracker.FlipPlayedCards(2,4);
+        _totalValueTracker.FlipPlayedCards(_flipValue[0],_flipValue[1]);
     }
 
     void PlusMinus21()
@@ -293,5 +308,11 @@ public class PlayCard_script : MonoBehaviour
         this.transform.DOScale(new Vector3(0, 0, 0), DiscardTime);
         yield return new WaitForSeconds(DiscardTime);
         Destroy(this.gameObject);
+    }
+
+    //Debug stuff
+    public void ToggleCardBack()
+    {
+        _cardBackImage.gameObject.SetActive(!_cardBackImage.gameObject.activeInHierarchy);
     }
 }

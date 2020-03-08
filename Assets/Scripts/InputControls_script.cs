@@ -16,6 +16,8 @@ public class InputControls_script : MonoBehaviour
 
     private GameController_script _gameController;
 
+    public Transform MouseHolder;
+
     void Start()
     {
         _gameController = GetComponent<GameController_script>();
@@ -26,11 +28,7 @@ public class InputControls_script : MonoBehaviour
     
     void Update()
     {
-        if (_gameController.GameStage == 0)
-        {
-            
-        }
-        else if (_gameController.GameStage == 1)
+        if (_gameController.GameStage == 1 || _gameController.GameStage == 0)
         {
             if (Input.GetButtonDown("Fire1"))
             {
@@ -81,23 +79,28 @@ public class InputControls_script : MonoBehaviour
                  _playCard = hit.gameObject.transform.parent.GetComponent<PlayCard_script>();
                  if (_playCard != null)
                  {
-                     if (_playCard.PlayerID != _gameController.ActivePlayer || _playCard.Placed)
-                     {
-                         _playCard = null;
-                         Debug.Log("InputControls_script: GetCard: wrong players card");
-                        //wrong player
-                        return;
-                     }
-                    if ((_gameController.ActivePlayer == 0 && !_gameController.LeftBoard.AllowMove) || (_gameController.ActivePlayer == 1 && !_gameController.RightBoard.AllowMove))
+                    if (_gameController.GameStage == 1)
                     {
-                        _playCard = null;
-                        Debug.Log("InputControls_script: GetCard: already placed card");
-                        return;
-                        
+                        if (_playCard.PlayerID != _gameController.ActivePlayer || _playCard.Placed)
+                        {
+                            _playCard = null;
+                            Debug.Log("InputControls_script: GetCard: wrong players card");
+                            //wrong player
+                            return;
+                        }
+                        if ((_gameController.ActivePlayer == 0 && !_gameController.LeftBoard.AllowMove) || (_gameController.ActivePlayer == 1 && !_gameController.RightBoard.AllowMove))
+                        {
+                            _playCard = null;
+                            Debug.Log("InputControls_script: GetCard: already placed card");
+                            return;
+                        }
                     }
                     break;
                  }
+
             }
+            _playCard.transform.SetParent(MouseHolder, false);
+
         }
     }
     
@@ -109,7 +112,7 @@ public class InputControls_script : MonoBehaviour
             //No card
         }
         
-        _playCard.transform.position = Input.mousePosition;
+        MouseHolder.transform.position = Input.mousePosition;
     }
 
     void PlaceCard()

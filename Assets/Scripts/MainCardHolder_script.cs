@@ -23,6 +23,10 @@ public class MainCardHolder_script : MonoBehaviour
         {
             return false;
         }
+        if (this.transform.childCount > 0)
+        {
+            return false;
+        }
         
         return true;
     }

@@ -27,6 +27,7 @@ public class TotalValueTracker_script : MonoBehaviour
     private UIManager_script _uiManager;
     private List<PlayCard_script> _playedCards;
     public bool TieBreaker;
+    private bool _cardPlayed;
 
     void Awake()
     {
@@ -40,7 +41,7 @@ public class TotalValueTracker_script : MonoBehaviour
         
         _uiManager = GameController.GetComponent<UIManager_script>();
         _playerIndicator = _uiManager.PlayerIndicator[PlayerID];
-        ResetValues(true);
+       
     }
 
     public void GenerateDeck()
@@ -79,7 +80,7 @@ public class TotalValueTracker_script : MonoBehaviour
             _valueText.color = TextColors[1];
             SetPlayerDone();
             return;
-            //auto end turn
+            //auto end turn. at max
         }
         else if (ActiveValue > GameController.MaxValue)
         {
@@ -92,8 +93,9 @@ public class TotalValueTracker_script : MonoBehaviour
         {
             _valueText.color = TextColors[0];
         }
-        if (playerCard)
+        if (playerCard) //only allowed one card per turn
         {
+            _cardPlayed = true;
             AllowMove = false;
             //GameController.SwitchPlayer();
         }
@@ -139,6 +141,21 @@ public class TotalValueTracker_script : MonoBehaviour
     {
         _skipButton.interactable = b;
         _stayButton.interactable = b;
+        _cardPlayed = !b;
         AllowMove = b;
-    }    
+    }
+
+    public void EndTurn()
+    {
+        if (ActiveValue > GameController.MaxValue && !_cardPlayed)
+        {
+            //player over max when ending turn, player is done
+            SetPlayerDone();
+        }
+        else
+        {
+            //player under max when ending turn, normal play
+            GameController.SwitchPlayer();
+        }
+    }
 }

@@ -7,6 +7,7 @@ public class AIMananger_script : MonoBehaviour
 {
     public TotalValueTracker_script AIBoard;
     public TotalValueTracker_script PlayerBoard;
+    private GlobalDeckManager_script _globalDeck;
     private PlayerDeckMananger_script _aiDeck;
     private GameController_script _gameController;
     public int MoveTime;
@@ -23,6 +24,14 @@ public class AIMananger_script : MonoBehaviour
         //ConfigAI();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            ToggleAllCardBacks();
+        }
+    }
+
     public void ConfigAI(AISelecter_script.AIStatesClass aiStates) //when choosing AI
     {
         AIStates = new AISelecter_script.AIStatesClass();
@@ -30,10 +39,12 @@ public class AIMananger_script : MonoBehaviour
 
         _aiDeck = AIBoard.GetComponent<PlayerDeckMananger_script>();
         _gameController = AIBoard.GameController;
+        _globalDeck = _gameController.GetComponent<GlobalDeckManager_script>();
         _buttonHolder = AIBoard.transform.GetChild(3).gameObject;
         AIBoard.PlayerName = AIStates.AIName;
         _aiDeck.SetPlayerDeck(AIStates.DeckValues, true);
         _buttonHolder.SetActive(false);
+
 
     }
 
@@ -45,6 +56,7 @@ public class AIMananger_script : MonoBehaviour
 
     IEnumerator DoDeterminePlay() //check for play
     {
+        //yield return new WaitForSeconds(_globalDeck.MoveTime); //added delay to player switch in game controller
         float rWait = Random.Range(0.5f, 1f);
         yield return new WaitForSeconds(rWait);
         if (AIBoard.PlayerDone)
@@ -53,6 +65,23 @@ public class AIMananger_script : MonoBehaviour
         }
         PlayCard_script tempCard = null;
         PlayCard_script drawCard = null;
+
+        //Check if random card gets AI close
+        if (AIBoard.ActiveValue >= (_gameController.MaxValue - AIStates.EndOffset) && AIBoard.ActiveValue < _gameController.MaxValue && !PlayerBoard.PlayerDone)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: radom card close to max, end round");
+            AIBoard.SetPlayerDone();
+            yield break;
+        }
+
+        //Check if out of cards
+        if (_aiDeck.ActiveCards.Count <= 0)
+        {
+            Debug.Log("AIMananger_script: DoDeterminePlay: out of cards, skip");
+            //Sound effect or something
+            _gameController.SwitchPlayer();
+            yield break;
+        }
 
         if (AIBoard.ActiveValue > _gameController.MaxValue) //Active value over max, check for minus card
         {
@@ -405,6 +434,14 @@ public class AIMananger_script : MonoBehaviour
         if (_determin != null)
         {
             StopCoroutine(_determin);
+        }
+    }
+
+    void ToggleAllCardBacks()
+    {
+        foreach (PlayCard_script pc in _aiDeck.ActiveCards)
+        {
+            pc.ToggleCardBack();
         }
     }
 }

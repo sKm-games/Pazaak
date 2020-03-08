@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class GlobalDeckManager_script : MonoBehaviour
@@ -13,6 +14,8 @@ public class GlobalDeckManager_script : MonoBehaviour
     private TotalValueTracker_script _leftBoard, _rigthBoard;
     private GameController_script _gameController;
     public Color[] CardColor;
+    public Transform CardSpawnPoint;
+    public float MoveTime;
 
     void Start()
     {
@@ -35,18 +38,24 @@ public class GlobalDeckManager_script : MonoBehaviour
 
     public void PlaceGlobalCard(int p)
     {
+        //Debug.Log("GlobalDeckManager_script:PlaceGlobalCard: Start - Value " +_activeDeck[0]);
         Transform spawn = FindSpawnLoc(p);
         if (spawn == null)
         {
             return;
         }
-        GameObject card = Instantiate(GlobalPlayCardPrefab);
+        if (_activeDeck.Count <= 0) //recreates active deck if deck runs out
+        {
+            GenerateGlobalDeck();
+        }
+        GameObject card = Instantiate(GlobalPlayCardPrefab, CardSpawnPoint.position, Quaternion.identity, CardSpawnPoint);
         PlayCard_script pc = card.GetComponent<PlayCard_script>();
         //int i = _activeDeck[0];
         string s = _activeDeck[0];
         pc.Config(_gameController.ActivePlayer,s, CardColor,_gameController);
         //Debug.Log("GlobalDeck: Add card to - " + _gameController.ActivePlayer + "- card value" + pc.Value);
-        pc.PlaceCard(spawn, false);
+        //pc.PlaceCard(spawn, false);
+        StartCoroutine(MoveCard(card, pc, spawn));
         _activeDeck.RemoveAt(0);
     }
 
@@ -85,5 +94,12 @@ public class GlobalDeckManager_script : MonoBehaviour
         }
         //no valid found
         return null;
+    }
+
+    IEnumerator MoveCard(GameObject card, PlayCard_script pc, Transform spawn)
+    {
+        card.transform.DOMove(spawn.position, MoveTime);
+        yield return new WaitForSeconds(MoveTime);
+        pc.PlaceCard(spawn, false);
     }
 }

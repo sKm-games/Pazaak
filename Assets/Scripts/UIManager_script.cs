@@ -23,6 +23,7 @@ public class UIManager_script : MonoBehaviour
     private TextMeshProUGUI[] _endGameRightPlayerText;
     private TextMeshProUGUI _leftPlayerName;
     private TextMeshProUGUI _rightPlayerName;
+    public GameObject LoadingScreen;
 
     void Start()
     {
@@ -130,4 +131,10 @@ public class UIManager_script : MonoBehaviour
         _leftPlayerName.text = _leftBoard.PlayerName;
         _rightPlayerName.text = _rightBoard.PlayerName;
     }
+
+    public void ToggleLoadingScreen(bool b)
+    {
+        LoadingScreen.SetActive(b);
+    }
+
 }
