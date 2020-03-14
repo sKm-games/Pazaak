@@ -8,8 +8,9 @@ using UnityEngine.UI;
 public class PlayCard_script : MonoBehaviour
 {
     public int PlayerID;
+    public string InfoString;
     public int Value;
-    private Transform _startingTransform;
+    public Transform _startingTransform;
     private Vector3 _startPos;
     private TextMeshProUGUI _valueText;
     public bool Placed;
@@ -55,6 +56,8 @@ public class PlayCard_script : MonoBehaviour
                 _discardPile = _totalValueTracker.DiscardPile;
             }
         }
+
+        InfoString = s;
         PlayerID = id;
         SetValuesAndAbility(s);
         _cardColors = new List<Color>(c);
@@ -64,7 +67,7 @@ public class PlayCard_script : MonoBehaviour
 
     void SetValuesAndAbility(string s)
     {
-        //Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s);
+        Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s +" - parent " +this.transform.parent.name);
         string[] tempString = s.Split('|');
         if (!tempString[1].Contains("/"))
         {
@@ -181,7 +184,10 @@ public class PlayCard_script : MonoBehaviour
         this.transform.position = t.position;
         this.transform.SetParent(t);
         this.transform.localScale = new Vector3(1,1,1); //to fix scaling bug
-
+        if (_gameController == null)
+        {
+            _gameController = FindObjectOfType<GameController_script>();
+        }
         Debug.Log("GC - " +_gameController.transform.name);
         if (_gameController.GameStage == 0) //placing card during deck building
         {

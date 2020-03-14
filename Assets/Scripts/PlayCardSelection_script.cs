@@ -7,14 +7,15 @@ using UnityEngine.UI;
 public class PlayCardSelection_script : MonoBehaviour
 {
     public string CardInfo;
-    private GameObject _defaultCard;
+    public GameObject _defaultCard;
     private TextMeshProUGUI _valueText, _infoText, _abilityButtonText;
     private Button _abilityButton;
     private int _value;
     private string _ability;
     private Button _infoButton;
     private Image _cardBackground;
-
+    private Transform _cardHolder;
+    
     void SetLinks()
     {
         _defaultCard = GetComponentInChildren<PlayCard_script>().gameObject;
@@ -42,6 +43,7 @@ public class PlayCardSelection_script : MonoBehaviour
         CardInfo = s;
         //SetValuesAndAbility(s);
         //CheckAbilities();
+        _cardHolder = _defaultCard.transform.parent;
         CreatNewCard(a);
     }
 
@@ -192,7 +194,7 @@ public class PlayCardSelection_script : MonoBehaviour
         if (_infoText.gameObject.activeInHierarchy)
         {
             _infoText.gameObject.SetActive(false);
-            foreach (Transform t in _defaultCard.transform.parent)
+            foreach (Transform t in _cardHolder)
             {
                 t.gameObject.SetActive(true);
             }
@@ -202,7 +204,7 @@ public class PlayCardSelection_script : MonoBehaviour
         {
             _infoText.text = "Insert card info, "; //get card info from centra list based on ability
             //_defaultCard.transform.parent.gameObject.SetActive(false);
-            foreach (Transform t in _defaultCard.transform.parent)
+            foreach (Transform t in _cardHolder)
             {
                 t.gameObject.SetActive(false);
             }

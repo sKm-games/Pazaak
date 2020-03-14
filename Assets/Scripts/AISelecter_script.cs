@@ -81,6 +81,6 @@ public class AISelecter_script : MonoBehaviour
 
         _aiMananger.ConfigAI(tempAIList[0]);
 
-        _gameController.NewGame();
+        //_gameController.NewGame();
     }
 }

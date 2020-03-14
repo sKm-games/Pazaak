@@ -52,6 +52,10 @@ public class TotalValueTracker_script : MonoBehaviour
 
     public void ResetValues(bool newGame)
     {
+        if (GameController.GameStage == 0)
+        {
+            return;
+        }
         _playedCards = new List<PlayCard_script>();
         ActiveValue = 0;
         _valueText.text = ActiveValue.ToString("F0");
@@ -139,6 +143,10 @@ public class TotalValueTracker_script : MonoBehaviour
 
     public void TogglePlayer(bool b)
     {
+        if (GameController.GameStage == 0)
+        {
+            return;
+        }
         _skipButton.interactable = b;
         _stayButton.interactable = b;
         _cardPlayed = !b;

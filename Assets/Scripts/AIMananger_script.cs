@@ -388,6 +388,12 @@ public class AIMananger_script : MonoBehaviour
             //StopCoroutine(_moveCard); 
             yield break;
         }
+        if (pc == null) //error skip turn
+        {
+            Debug.Log("AIMananger_script: MoveCard: null passed");
+            _gameController.SwitchPlayer();
+            yield break;
+        }
         Transform slot = null;
         Debug.Log("AIMananger_script: MoveCard: find slot");
         foreach (Transform t in AIBoard._mainCardBoard)

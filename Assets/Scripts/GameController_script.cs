@@ -234,6 +234,7 @@ public class GameController_script : MonoBehaviour
 
     public void NewGame() //ui button
     {
+        GameStage = 1;
         Debug.Log("New game");
         StopAllCoroutines();
         StartCoroutine(StartNewGame());
