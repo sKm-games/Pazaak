@@ -9128,7 +9128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a4545e4ec02084894f795acd95a47e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerInfoManager: {fileID: 0}
+  PlayerInfoManager: {fileID: 1156908152}
   EndGameScreen: {fileID: 375434189}
   CardSelectionScreen: {fileID: 1262535845}
   GameBoardScreen: {fileID: 1301055994}

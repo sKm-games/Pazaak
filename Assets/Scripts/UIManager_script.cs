@@ -138,7 +138,7 @@ public class UIManager_script : MonoBehaviour
 
     public void SetPlayerNames()
     {
-        _leftBoard.PlayerName = PlayerInfoManager.name;
+        _leftBoard.PlayerName = PlayerInfoManager.Name;
 
         _leftPlayerName.text = _leftBoard.PlayerName;
         _rightPlayerName.text = _rightBoard.PlayerName;
