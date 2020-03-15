@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\AIMananger_script.cs" />
     <Compile Include="Assets\Scripts\AISelecter_script.cs" />
     <Compile Include="Assets\Scripts\CSVImporter_script.cs" />
+    <Compile Include="Assets\Scripts\CardAbilityInfoManager_script.cs" />
     <Compile Include="Assets\Scripts\GameController_script.cs" />
     <Compile Include="Assets\Scripts\GenerateSelectionCards_script.cs" />
     <Compile Include="Assets\Scripts\GlobalDeckManager_script.cs" />
@@ -80,8 +81,12 @@
     <Compile Include="Assets\Scripts\MainCardHolder_script.cs" />
     <Compile Include="Assets\Scripts\PlayCardSelection_script.cs" />
     <Compile Include="Assets\Scripts\PlayCard_script.cs" />
+    <Compile Include="Assets\Scripts\PlayerData_script.cs" />
     <Compile Include="Assets\Scripts\PlayerDeckMananger_script.cs" />
     <Compile Include="Assets\Scripts\PlayerInfoManager_script.cs" />
+    <Compile Include="Assets\Scripts\SaveSystem_Script.cs" />
+    <Compile Include="Assets\Scripts\SoundManager_script.cs" />
+    <Compile Include="Assets\Scripts\StartScreen_script.cs" />
     <Compile Include="Assets\Scripts\TotalValueTracker_script.cs" />
     <Compile Include="Assets\Scripts\UIManager_script.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />

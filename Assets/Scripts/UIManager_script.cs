@@ -6,10 +6,11 @@ using UnityEngine.UI;
 
 public class UIManager_script : MonoBehaviour
 {
-    public GameObject EndGameScreen;
+    public PlayerInfoManager_script PlayerInfoManager;
+    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen;
     private TextMeshProUGUI _endGameText;
     private TextMeshProUGUI _endGameTitleText;
-    private Button _roundEndButton;
+    private Button _roundEndButton, _cardSeletionButton;
     private TextMeshProUGUI _roundEndButtonText;
     public Image[] LeftRoundCounter;
     public Image[] RightRoundCounter;
@@ -31,6 +32,7 @@ public class UIManager_script : MonoBehaviour
         _endGameTitleText = EndGameScreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         _roundEndButton = EndGameScreen.transform.GetChild(4).GetChild(0).GetComponent<Button>();
         _roundEndButtonText = _roundEndButton.GetComponentInChildren<TextMeshProUGUI>();
+        _cardSeletionButton = EndGameScreen.transform.GetChild(4).GetChild(1).GetComponent<Button>();
         _gameController = GetComponent<GameController_script>();
         _playerIndicatorBackground = new Image[2];
         _playerIndicatorBackground[0] = PlayerIndicator[0].transform.parent.GetComponent<Image>();
@@ -45,8 +47,11 @@ public class UIManager_script : MonoBehaviour
         _rightPlayerName = PlayerIndicator[1].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
 
         ResetUI();
+        GameBoardScreen.SetActive(false);
+        CardSelectionScreen.SetActive(false);
+        StartScreen.SetActive(true);
 
-        VersionText.text = Application.version;
+        VersionText.text = "Work in progress v. " +Application.version;
     }
 
     public void ToggleEndScreen(bool b, bool r, string t = null, string s = null, string leftScore = null, string rightScore = null)
@@ -68,27 +73,32 @@ public class UIManager_script : MonoBehaviour
         _endGameRightPlayerText[1].text = "Score\n" + _rightBoard.ActiveValue + " of " + _gameController.MaxValue;
         _endGameRightPlayerText[2].text = "Rounds\n" + _rightBoard.Wins + " of 3";
 
+        
         _roundEndButton.onClick.RemoveAllListeners();
 
         if (r)
         {
+            _cardSeletionButton.gameObject.SetActive(false);
             _roundEndButton.onClick.AddListener(_gameController.NewRound);
             _roundEndButtonText.text = "Next Round";
         }
         else
         {
             _roundEndButton.onClick.AddListener(_gameController.NewGame);
-            _roundEndButtonText.text = "New Game";
+            _roundEndButtonText.text = "Replay";
+            _cardSeletionButton.gameObject.SetActive(true);
         }
     }
 
-    public void UpdateLeftRoundCounter(int a)
+    public void UpdateLeftRoundCounter()
     {
+        int a = _leftBoard.Wins;
         LeftRoundCounter[a - 1].transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    public void UpdateRightRoundCounter(int a)
+    public void UpdateRightRoundCounter()
     {
+        int a = _rightBoard.Wins;
         RightRoundCounter[a - 1].transform.GetChild(0).gameObject.SetActive(true);
     }
 
@@ -128,6 +138,8 @@ public class UIManager_script : MonoBehaviour
 
     public void SetPlayerNames()
     {
+        _leftBoard.PlayerName = PlayerInfoManager.name;
+
         _leftPlayerName.text = _leftBoard.PlayerName;
         _rightPlayerName.text = _rightBoard.PlayerName;
     }
@@ -137,4 +149,10 @@ public class UIManager_script : MonoBehaviour
         LoadingScreen.SetActive(b);
     }
 
+    public void ToCardSelection()
+    {
+        _gameController.GameStage = 0;
+        GameBoardScreen.SetActive(false);
+        CardSelectionScreen.SetActive(true);
+    }
 }

@@ -15,6 +15,7 @@ public class PlayCardSelection_script : MonoBehaviour
     private Button _infoButton;
     private Image _cardBackground;
     private Transform _cardHolder;
+    private CardAbilityInfoManager_script _cardAbilityInfo;
     
     void SetLinks()
     {
@@ -37,10 +38,13 @@ public class PlayCardSelection_script : MonoBehaviour
         //ConfigDefaultCard("PM|5",4);
     }
 
-   public void ConfigDefaultCard(string s, int a)
+   public void ConfigDefaultCard(string s, int a, GameController_script gc)
     {
         SetLinks();
+        _cardAbilityInfo = gc.GetComponent<CardAbilityInfoManager_script>();
         CardInfo = s;
+        _ability = _cardAbilityInfo.GetAbilityInfo(CardInfo);
+        _infoText.text = _ability;
         //SetValuesAndAbility(s);
         //CheckAbilities();
         _cardHolder = _defaultCard.transform.parent;
@@ -202,7 +206,7 @@ public class PlayCardSelection_script : MonoBehaviour
         }
         else
         {
-            _infoText.text = "Insert card info, "; //get card info from centra list based on ability
+            //_infoText.text = "Insert card info, "; //get card info from centra list based on ability
             //_defaultCard.transform.parent.gameObject.SetActive(false);
             foreach (Transform t in _cardHolder)
             {

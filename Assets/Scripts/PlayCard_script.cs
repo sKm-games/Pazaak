@@ -67,7 +67,7 @@ public class PlayCard_script : MonoBehaviour
 
     void SetValuesAndAbility(string s)
     {
-        Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s +" - parent " +this.transform.parent.name);
+        //Debug.Log("PlayCard_script: SetValueAndAbility: string - " +s +" - parent " +this.transform.parent.name);
         string[] tempString = s.Split('|');
         if (!tempString[1].Contains("/"))
         {
@@ -188,7 +188,7 @@ public class PlayCard_script : MonoBehaviour
         {
             _gameController = FindObjectOfType<GameController_script>();
         }
-        Debug.Log("GC - " +_gameController.transform.name);
+        //Debug.Log("GC - " +_gameController.transform.name);
         if (_gameController.GameStage == 0) //placing card during deck building
         {
             return;

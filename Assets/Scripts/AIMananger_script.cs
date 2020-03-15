@@ -69,7 +69,7 @@ public class AIMananger_script : MonoBehaviour
         //Check if random card gets AI close
         if (AIBoard.ActiveValue >= (_gameController.MaxValue - AIStates.EndOffset) && AIBoard.ActiveValue < _gameController.MaxValue && !PlayerBoard.PlayerDone)
         {
-            Debug.Log("AIMananger_script: DoDeterminePlay: radom card close to max, end round");
+            Debug.Log("AIMananger_script: DoDeterminePlay: random card close to max, end round");
             AIBoard.SetPlayerDone();
             yield break;
         }
@@ -77,6 +77,11 @@ public class AIMananger_script : MonoBehaviour
         //Check if out of cards
         if (_aiDeck.ActiveCards.Count <= 0)
         {
+            if (AIBoard.ActiveValue > _gameController.MaxValue)
+            {
+                AIBoard.SetPlayerDone();
+                yield break;
+            }
             Debug.Log("AIMananger_script: DoDeterminePlay: out of cards, skip");
             //Sound effect or something
             _gameController.SwitchPlayer();
@@ -322,10 +327,11 @@ public class AIMananger_script : MonoBehaviour
         return tempCard;
     }
 
-    IEnumerator DoDeterminPlay() //old, broken.
+    #region Old broken determin Play
+    /*IEnumerator DoDeterminPlay() //old, broken.
     {
         debugTrack++;
-        Debug.Log("AI Determin PLay - " +debugTrack);
+        Debug.Log("AI Determin PLay - " + debugTrack);
         if (_gameController.ActivePlayer != AIBoard.PlayerID || _gameController.RoundDone || AIBoard.ActiveValue >= _gameController.MaxValue)
         {
             //not AI's turn or round over
@@ -335,7 +341,7 @@ public class AIMananger_script : MonoBehaviour
         float t = Random.Range(0.5f, 1f);
         yield return new WaitForSeconds(t);
         if ((AIBoard.ActiveValue > PlayerBoard.ActiveValue && AIBoard.ActiveValue < _gameController.MaxValue &&
-            PlayerBoard.PlayerDone)) 
+             PlayerBoard.PlayerDone))
         {
             Debug.Log("More then player");
             AIBoard.SetPlayerDone();
@@ -357,7 +363,7 @@ public class AIMananger_script : MonoBehaviour
                 }
             }
             //check close to max
-            
+
             if (playTotal <= AIStates.EndOffset || (playTotal > PlayerBoard.ActiveValue && PlayerBoard.PlayerDone))
             {
                 pc = fpc;
@@ -377,8 +383,9 @@ public class AIMananger_script : MonoBehaviour
         //no valid moves, skip
         Debug.Log("AI Switch Player");
         _gameController.SwitchPlayer();
-    }
-
+    }*/
+    #endregion
+   
     IEnumerator MoveCard(PlayCard_script pc) //look for valid slot and move card
     {
         Debug.Log("AIMananger_script: MoveCard: Start");

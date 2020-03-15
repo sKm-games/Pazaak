@@ -15,6 +15,7 @@ public class InputControls_script : MonoBehaviour
     //--
 
     private GameController_script _gameController;
+    public GenerateSelectionCards_script CardSelection;
 
     public Transform MouseHolder;
 
@@ -99,6 +100,10 @@ public class InputControls_script : MonoBehaviour
                  }
 
             }
+            if (_playCard == null) //no card selected
+            {
+                return;
+            }
             _playCard.transform.SetParent(MouseHolder, false);
 
         }
@@ -127,7 +132,7 @@ public class InputControls_script : MonoBehaviour
         m_PointerEventData.position = Input.mousePosition;
         List<RaycastResult> results = new List<RaycastResult>();
         m_Raycaster.Raycast(m_PointerEventData, results);
-        Debug.Log("InputControls_script: GetCard: hits - " + results.Count);
+        //Debug.Log("InputControls_script: GetCard: hits - " + results.Count);
         MainCardHolder_script cardHolder = null;
 
         foreach (RaycastResult hit in results)
@@ -153,6 +158,10 @@ public class InputControls_script : MonoBehaviour
             //_gameController.SwitchPlayer();
             _playCard.PlaceCard(cardHolder.transform);
             _playCard = null;
+            if (_gameController.GameStage == 0)
+            {
+                CardSelection.SetPlayerDeck();
+            }
         }
     }
 }

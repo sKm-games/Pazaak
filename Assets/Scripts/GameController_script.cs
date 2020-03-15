@@ -17,7 +17,10 @@ public class GameController_script : MonoBehaviour
     private Coroutine _switchPlayer;
     public bool RoundDone;
     public int GameStage; //used to control controls
-    
+    public SoundManager_script SoundManager;
+    public AudioClip RoundWin, RoundLose;
+    private PlayerInfoManager_script _playerInfoManager;
+
     void Awake()
     {
         //LeftBoard = MainCanvas.transform.GetChild(1).GetChild(2).GetChild(4).GetComponent<TotalValueTracker_script>();
@@ -27,6 +30,7 @@ public class GameController_script : MonoBehaviour
 
         _uiManager = GetComponent<UIManager_script>();
         _globalDeckManager = GetComponent<GlobalDeckManager_script>();
+        _playerInfoManager = _uiManager.PlayerInfoManager;
     }
 
     void Start()
@@ -97,11 +101,12 @@ public class GameController_script : MonoBehaviour
         RightBoard.TogglePlayer(false);
         if (LeftBoard.PlayerDone && RightBoard.PlayerDone)
         {
-            CompareScore();
+            //CompareScore();
+            StartCoroutine("CompareScore");
             yield break;
         }
         yield return new WaitForSeconds(SwitchDelay);
-        Debug.Log("Do Switch Player");
+        //Debug.Log("Do Switch Player");
         if (LeftBoard.PlayerDone && !RightBoard.PlayerDone)
         {
             ActivePlayer = 1;
@@ -113,7 +118,8 @@ public class GameController_script : MonoBehaviour
         else if((LeftBoard.ActiveValue > MaxValue || RightBoard.ActiveValue > MaxValue))
         {
             RoundDone = true;
-            CompareScore();
+            //CompareScore();
+            StartCoroutine("CompareScore");
             //StopCoroutine(_switchPlayer);
             yield break;
         }
@@ -140,7 +146,7 @@ public class GameController_script : MonoBehaviour
         }
     }
 
-    void CompareScore()
+    IEnumerator CompareScore()
     {
         Debug.Log("Compare score");
         string t;
@@ -149,17 +155,20 @@ public class GameController_script : MonoBehaviour
         string rightScore = RightBoard.PlayerName + "\n\n Score \n" + RightBoard.ActiveValue + " of " + MaxValue;
         RoundDone = true;
         AiMananger.RoundOver();
+        yield return new WaitForSeconds(0.5f);
         if ((LeftBoard.ActiveValue > RightBoard.ActiveValue && LeftBoard.ActiveValue <= MaxValue) || (LeftBoard.ActiveValue <= MaxValue && RightBoard.ActiveValue > MaxValue)) //left wins
         {
             LeftBoard.Wins++;
-            _uiManager.UpdateLeftRoundCounter(LeftBoard.Wins);
+            _uiManager.Invoke("UpdateLeftRoundCounter",1.1f);
             Debug.Log("GameController_script: CompareScore: Player 1(left) Wins");
+            SoundManager.PlayEffetDelay(RoundWin, 0.5f);
             if (LeftBoard.Wins == 3)
             {
                 t = "Game Over";
                 s = LeftBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
-                return;
+                _playerInfoManager.GameWon();
+                yield break;
             }
             t = "Round Over";
             s = LeftBoard.PlayerName + " Wins";
@@ -169,15 +178,16 @@ public class GameController_script : MonoBehaviour
         else if ((RightBoard.ActiveValue > LeftBoard.ActiveValue && RightBoard.ActiveValue <= MaxValue) || (RightBoard.ActiveValue <= MaxValue && LeftBoard.ActiveValue > MaxValue)) //right wins
         {
             RightBoard.Wins++;
-            _uiManager.UpdateRightRoundCounter(RightBoard.Wins);
+            _uiManager.Invoke("UpdateRightRoundCounter",1.1f);
             Debug.Log("GameController_script: CompareScore: Player 2(left) Wins");
+            SoundManager.PlayEffetDelay(RoundLose, 0.5f);
             if (RightBoard.Wins == 3)
             {
                 t = "Game Over";
                 s = RightBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
-
-                return;
+                _playerInfoManager.GameLost();
+                yield break;
             }
             t = "Round Over";
             s = RightBoard.PlayerName + " Wins";
@@ -190,10 +200,12 @@ public class GameController_script : MonoBehaviour
             if (LeftBoard.TieBreaker && !RightBoard.TieBreaker)
             {
                 s = "Tie break \n " + LeftBoard.PlayerName + " Wins!";
+                LeftBoard.Wins++;
             }
             else if (!LeftBoard.TieBreaker && RightBoard.TieBreaker)
             {
                 s = "Tie break \n " + RightBoard.PlayerName + " Wins!";
+                RightBoard.Wins++;
             }
             else if (LeftBoard.TieBreaker && RightBoard.TieBreaker)
             {
@@ -268,5 +280,5 @@ public class GameController_script : MonoBehaviour
         StartGame();
         _uiManager.ToggleLoadingScreen(false);
     }
-    
+
 }
