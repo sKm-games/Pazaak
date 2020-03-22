@@ -14,12 +14,14 @@ public class GenerateSelectionCards_script : MonoBehaviour
     public Transform SelectedCardHolder;
     public Color[] CardColors;
     private MainCardHolder_script[] _selectedCardHolders;
-    public Button StartButton;
+    private Button _startButton, _clearButton, _fillButton;
     private List<Transform> _cardPages;
     private int _cardPageIndex;
     private int _activePages;
     public GameObject CardPageButtonHolder;
     private TextMeshProUGUI _pageText;
+
+    public GameObject MainButtonHolder;
 
     public PlayerDeckMananger_script PlayersDeck;
     public PlayerInfoManager_script PlayerInfo;
@@ -30,7 +32,13 @@ public class GenerateSelectionCards_script : MonoBehaviour
         _pageText = CardPageButtonHolder.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         SetCardPages();
         GenerateAllCards();
-        StartButton.interactable = false;
+        _fillButton = MainButtonHolder.transform.GetChild(0).GetComponent<Button>();
+        _startButton = MainButtonHolder.transform.GetChild(1).GetComponent<Button>();
+        _clearButton = MainButtonHolder.transform.GetChild(2).GetComponent<Button>();
+
+        _startButton.interactable = false;
+        _clearButton.interactable = false;
+
     }
 
     private void GenerateAllCards()
@@ -107,28 +115,32 @@ public class GenerateSelectionCards_script : MonoBehaviour
             {
                 CurrentDeck.Add(pc.InfoString);
             }
-            StartButton.interactable = true;
+            _startButton.interactable = true;
             PlayersDeck.SetPlayerDeck(CurrentDeck);
             PlayerInfo.ActiveDeck = new List<string>(CurrentDeck);
         }
         else
         {
-            StartButton.interactable = false;
+            _startButton.interactable = false;
         }
     }
 
     public bool CheckValidSelection()
     {
+        bool b = true;
         foreach (MainCardHolder_script mc in _selectedCardHolders)
         {
             if (mc.transform.childCount == 0)
             {
                 //Debug.Log("Slot missing card. error");
-                return false;
+                b = false;
+                continue;
             }
-        }
 
-        return true;
+            _clearButton.interactable = true;
+
+        }
+        return b;
     }
 
     public void FillSlots()
@@ -155,7 +167,8 @@ public class GenerateSelectionCards_script : MonoBehaviour
         }
         CurrentDeck = new List<string>();
 
-        StartButton.interactable = false;
+        _startButton.interactable = false;
+        _clearButton.interactable = false;
     }
 
     public void SwitchPage(int i)

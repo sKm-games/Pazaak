@@ -24,6 +24,7 @@ public class InputControls_script : MonoBehaviour
         _gameController = GetComponent<GameController_script>();
         m_Raycaster = FindObjectOfType<GraphicRaycaster>(); //finds the graphic raycaster
         m_EventSystem = FindObjectOfType<EventSystem>(); //finds the eventsystem
+        MouseHolder.gameObject.SetActive(true);
     }
 
     

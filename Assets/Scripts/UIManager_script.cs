@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 public class UIManager_script : MonoBehaviour
 {
     public PlayerInfoManager_script PlayerInfoManager;
-    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen;
+    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar;
     private TextMeshProUGUI _endGameText;
     private TextMeshProUGUI _endGameTitleText;
     private Button _roundEndButton, _cardSeletionButton;
@@ -25,6 +26,9 @@ public class UIManager_script : MonoBehaviour
     private TextMeshProUGUI _leftPlayerName;
     private TextMeshProUGUI _rightPlayerName;
     public GameObject LoadingScreen;
+
+    private TextMeshProUGUI _playerInfoBarName;
+    private TextMeshProUGUI _playerInfoBarCredits;
 
     void Start()
     {
@@ -45,6 +49,9 @@ public class UIManager_script : MonoBehaviour
 
         _leftPlayerName = PlayerIndicator[0].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
         _rightPlayerName = PlayerIndicator[1].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
+
+        _playerInfoBarName = PlayerInfoBar.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        _playerInfoBarCredits = PlayerInfoBar.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
 
         ResetUI();
         GameBoardScreen.SetActive(false);
@@ -147,12 +154,38 @@ public class UIManager_script : MonoBehaviour
     public void ToggleLoadingScreen(bool b)
     {
         LoadingScreen.SetActive(b);
+        if (b)
+        {
+            
+            LoadingScreen.GetComponent<CanvasGroup>().DOFade(1, 1f);
+        }
+        else
+        {
+            LoadingScreen.GetComponent<CanvasGroup>().DOFade(0, 1f);
+        }
     }
 
-    public void ToCardSelection()
+    public void ToPreGameMenu()
     {
         _gameController.GameStage = 0;
+        UpdatePlayerInfoBar();
         GameBoardScreen.SetActive(false);
-        CardSelectionScreen.SetActive(true);
+        //CardSelectionScreen.SetActive(true);
+        PreGameScreen.SetActive(true);
+        
+    }
+
+    public void DeactiveGameUI()
+    {
+        CardSelectionScreen.SetActive(false);
+        OpponentSelction.SetActive(false);
+        GameBoardScreen.SetActive(false);
+        EndGameScreen.SetActive(false);
+    }
+
+    public void UpdatePlayerInfoBar()
+    {
+        _playerInfoBarName.text = PlayerInfoManager.Name;
+        _playerInfoBarCredits.text = "Credits: " + PlayerInfoManager.Credits;
     }
 }

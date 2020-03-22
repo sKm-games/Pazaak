@@ -9,14 +9,22 @@ public class AISelecter_script : MonoBehaviour
     {
         public string Difficulty;
         public string AIName;
+        public int Credits;
+        public string SpriteRef;
+        public Sprite AISprite;
         public List<string> DeckValues;
         public int EndOffset;
         public float RiskValue;
     }
-    public List<AIStatesClass> AllAIs;
+    
+    //public List<AIStatesClass> AllAI;
+
+    public List<AIStatesClass> EasyAI, MediumAI, HardAI;
 
     private GameController_script _gameController;
     private AIMananger_script _aiMananger;
+
+    public AssetLoader_script AssetLoader;
 
     void OnEnable()
     {
@@ -34,8 +42,18 @@ public class AISelecter_script : MonoBehaviour
         _gameController = _aiMananger.AIBoard.GameController;
     }
 
-    public void GenerateAIs(CSVImporter_script.ImportedValues[] values)
+    void GenerateAIs(CSVImporter_script.ImportedValues[] values)
     {
+        StartCoroutine(DoGenerateAIs(values));
+    }
+
+    IEnumerator DoGenerateAIs(CSVImporter_script.ImportedValues[] values)
+    {
+        if (!AssetLoader.AILoadingDone) //wait for all AI images to load
+        {
+            yield return new WaitForSeconds(1f);
+            yield return null;
+        }
 
         foreach (CSVImporter_script.ImportedValues value in values)
         {
@@ -54,12 +72,43 @@ public class AISelecter_script : MonoBehaviour
             newAI.EndOffset = int.Parse(value.Values[3]);
             newAI.RiskValue = float.Parse(value.Values[4]);
 
-            AllAIs.Add(newAI);
+            newAI.SpriteRef = value.Values[5];
+            newAI.AISprite = AssetLoader.GetAISprite(newAI.SpriteRef);
+            //newAI.AISprite = //something something using spriteRef
+
+            if (newAI.Difficulty == "Easy")
+            {
+                EasyAI.Add(newAI);
+            }
+            else if (newAI.Difficulty == "Medium")
+            {
+                MediumAI.Add(newAI);
+            }
+            else if (newAI.Difficulty == "Hard")
+            {
+                HardAI.Add(newAI);
+            }
+
+            //AllAIs.Add(newAI);
         }
-        SelectDifficulty(_gameController.Difficulty);
+        //SelectDifficulty(_gameController.Difficulty);
     }
 
-    public void SelectDifficulty(string difficulty)
+    public List<AIStatesClass> GetAIs()
+    {
+        List<AIStatesClass> aiList = new List<AIStatesClass>();
+        EasyAI.Shuffle();
+        MediumAI.Shuffle();
+        HardAI.Shuffle();
+
+        aiList.Add(EasyAI[0]);
+        aiList.Add(MediumAI[0]);
+        aiList.Add(HardAI[0]);
+
+        return aiList;
+    }
+
+    /*public void SelectDifficulty(string difficulty)
     {
         List<AIStatesClass> tempAIList = new List<AIStatesClass>();
         if (difficulty == "" || difficulty == "all")
@@ -82,5 +131,5 @@ public class AISelecter_script : MonoBehaviour
         _aiMananger.ConfigAI(tempAIList[0]);
 
         //_gameController.NewGame();
-    }
+    }*/
 }

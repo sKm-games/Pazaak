@@ -23,7 +23,7 @@ public class CSVImporter_script : MonoBehaviour
 
     private IEnumerator loadFile;
 
-    public GameObject LoadingScreen;
+    public UIManager_script UiManager;
 
     public delegate void LoadingDone(ImportedValues[] values);
 
@@ -31,10 +31,7 @@ public class CSVImporter_script : MonoBehaviour
 
     void Awake()
     {
-        if (LoadingScreen != null)
-        {
-            LoadingScreen.SetActive(true);
-        }
+        UiManager.LoadingScreen.SetActive(true);
     }
 
     void Start()
@@ -52,8 +49,7 @@ public class CSVImporter_script : MonoBehaviour
         StartCoroutine(loadFile); //starts the file importing
     }
 
-    IEnumerator
-        loadStreamingAsset() //based on Germáns json import script, but had to tweak how the file is being read since its a csv and I needed it to spilt on lines.
+    IEnumerator loadStreamingAsset() //based on Germáns json import script, but had to tweak how the file is being read since its a csv and I needed it to spilt on lines.
     {
         //Debug.Log("LoadCSVCartDiver_script: loadStreamingAsset: Start import");
         //just creates the file path.
@@ -147,8 +143,9 @@ public class CSVImporter_script : MonoBehaviour
 
     public void CheckLoadingDone() //add some sort of loading done check
     {
-        LoadingScreen.SetActive(false);
+        //LoadingScreen.SetActive(false);
         OnLoadingDone(AllImportedValues);
+        UiManager.ToggleLoadingScreen(false);
     }
 }
 

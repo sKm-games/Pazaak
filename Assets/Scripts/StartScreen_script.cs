@@ -35,15 +35,22 @@ public class StartScreen_script : MonoBehaviour
     public void LoadGame()
     {
         PlayerInfoManager.LoadPlayerInfo();
-        this.gameObject.SetActive(false);
-        UiManager.CardSelectionScreen.SetActive(true);
+        ToGame();
     }
 
     public void NewGame()
     {
         PlayerInfoManager.SetDefaultValues();
+        ToGame();
+    }
+
+    void ToGame()
+    {
         this.gameObject.SetActive(false);
-        UiManager.CardSelectionScreen.SetActive(true);
+        //UiManager.CardSelectionScreen.SetActive(true);
+        UiManager.DeactiveGameUI();
+        UiManager.PreGameScreen.SetActive(true);
+        UiManager.UpdatePlayerInfoBar();
     }
 
     public void DeleteGameSave()

@@ -44,8 +44,6 @@ public class AIMananger_script : MonoBehaviour
         AIBoard.PlayerName = AIStates.AIName;
         _aiDeck.SetPlayerDeck(AIStates.DeckValues, true);
         _buttonHolder.SetActive(false);
-
-
     }
 
     public void DeterminPlay()

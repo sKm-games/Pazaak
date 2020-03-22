@@ -41,7 +41,6 @@ public class TotalValueTracker_script : MonoBehaviour
         
         _uiManager = GameController.GetComponent<UIManager_script>();
         _playerIndicator = _uiManager.PlayerIndicator[PlayerID];
-       
     }
 
     public void GenerateDeck()
