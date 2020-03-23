@@ -26,6 +26,8 @@ public class GenerateSelectionCards_script : MonoBehaviour
     public PlayerDeckMananger_script PlayersDeck;
     public PlayerInfoManager_script PlayerInfo;
 
+    private List<PlayCard_script> _allcards;
+
     void Start()
     {
         _selectedCardHolders = SelectedCardHolder.GetComponentsInChildren<MainCardHolder_script>();
@@ -43,7 +45,7 @@ public class GenerateSelectionCards_script : MonoBehaviour
 
     private void GenerateAllCards()
     {
-        foreach (string cardInfo in PlayerInfo.DeckInventroy)
+        /*foreach (string cardInfo in PlayerInfo.DeckInventroy)
         {
             Transform parent = GetCardPage();
             GameObject card = Instantiate(SelectCardPrefab, parent.position, Quaternion.identity,
@@ -52,9 +54,26 @@ public class GenerateSelectionCards_script : MonoBehaviour
             PlayCard_script pc = card.GetComponentInChildren<PlayCard_script>();
             string[] cardString = cardInfo.Split(',');
             int cardAmount = int.Parse(cardString[0]);
-            pc.Config(0,cardString[1],CardColors, GameController);
+            pc.Config(0, cardString[1], CardColors, GameController);
             pcs.ConfigDefaultCard(cardString[1], cardAmount, GameController);
+        }*/
+
+        _allcards = new List<PlayCard_script>();
+
+        foreach (PlayerInfoManager_script.DeckInventroyClass cardInfo in PlayerInfo.PlayerDeck)
+        {
+            Transform parent = GetCardPage();
+            GameObject card = Instantiate(SelectCardPrefab, parent.position, Quaternion.identity,
+                parent);
+            PlayCardSelection_script pcs = card.GetComponentInChildren<PlayCardSelection_script>();
+            PlayCard_script pc = card.GetComponentInChildren<PlayCard_script>();
+            
+            pc.Config(0, cardInfo.CardInfo, CardColors, GameController);
+            pcs.ConfigDefaultCard(cardInfo.CardInfo, cardInfo.CardAmount, GameController);
+
+            _allcards.Add(pc);
         }
+        
 
         foreach (Transform c in _cardPages)
         {
@@ -145,7 +164,10 @@ public class GenerateSelectionCards_script : MonoBehaviour
 
     public void FillSlots()
     {
-        List<PlayCard_script> pcs = new List<PlayCard_script>(AllCardsHolder.GetComponentsInChildren<PlayCard_script>());
+        //List<PlayCard_script> pcs = new List<PlayCard_script>(AllCardsHolder.GetComponentsInChildren<PlayCard_script>());
+
+        List<PlayCard_script> pcs = new List<PlayCard_script>(_allcards);
+
         pcs.Shuffle();
         foreach (MainCardHolder_script mc in _selectedCardHolders)
         {

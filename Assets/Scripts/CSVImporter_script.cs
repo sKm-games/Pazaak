@@ -118,16 +118,13 @@ public class CSVImporter_script : MonoBehaviour
         AllImportedStrings = new List<string>(); //creates a new list of strings
         StringReader sr = new StringReader(s);
         string line;
-        while ((line = sr.ReadLine()) != null
-        ) //reads each line of the downloaded string, if the string is not null add the line to the main string list
+        while ((line = sr.ReadLine()) != null) //reads each line of the downloaded string, if the string is not null add the line to the main string list
         {
-            AllImportedStrings.Add(line);
+           AllImportedStrings.Add(line);
         }
 
-        AllImportedStrings
-            .RemoveAt(0); //Removed the first info line from the file, this line usely holdes info about each column
+        AllImportedStrings.RemoveAt(0); //Removed the first info line from the file, this line usely holdes info about each column
         SplitStrings(); //split the values on ;
-                        //Invoke("LoadingDone",1f);
     }
 
     private void SplitStrings() //splits all the values into seperate values

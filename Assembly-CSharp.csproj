@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\PlayerDeckMananger_script.cs" />
     <Compile Include="Assets\Scripts\PlayerInfoManager_script.cs" />
     <Compile Include="Assets\Scripts\SaveSystem_Script.cs" />
+    <Compile Include="Assets\Scripts\ShopManager_script.cs" />
     <Compile Include="Assets\Scripts\SoundManager_script.cs" />
     <Compile Include="Assets\Scripts\StartScreen_script.cs" />
     <Compile Include="Assets\Scripts\TotalValueTracker_script.cs" />

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerInfoManager_script : MonoBehaviour
 {
@@ -8,13 +9,25 @@ public class PlayerInfoManager_script : MonoBehaviour
     public int AvatarIndex;
     public Sprite Avatar; //avatar sprite
     public int Credits; //Amount of money
-    public List<string> DeckInventroy; //All cards the player own
+
+    [System.Serializable]
+    public class DeckInventroyClass
+    {
+        public string CardInfo;
+        public int CardAmount;
+    }
+
+    public List<DeckInventroyClass> PlayerDeck;
+
     public List<string> ActiveDeck; //All cards the player has selected to play with, max 12
-                                    //Level? //used to unlock AI opponets?
+    
+    //Level? //used to unlock AI opponets?
+
     public int Wins, Loses, Played;
     private float _winRate; //wins/gamesPlayed
 
     public GenerateSelectionCards_script CardSelection;
+    public UIManager_script UiManager;
 
 
     public void CalcWinRate()
@@ -27,7 +40,6 @@ public class PlayerInfoManager_script : MonoBehaviour
         Wins++;
         Played++;
         CalcWinRate();
-        SavePlayerInfo();
     }
 
     public void GameLost()
@@ -35,9 +47,41 @@ public class PlayerInfoManager_script : MonoBehaviour
         Loses++;
         Played++;
         CalcWinRate();
+    }
+
+    public void ModifyCredits(int credits)
+    {
+        Credits += credits;
+        UiManager.UpdatePlayerInfoBar();
         SavePlayerInfo();
     }
 
+    public void AddNewCard(string cardInfo, int price)
+    {
+        Credits -= price;
+        int index = 999;
+        for (int i = 0; i < PlayerDeck.Count; i++)
+        {
+            if (PlayerDeck[i].CardInfo == cardInfo)
+            {
+                index = i;
+                break;
+            }
+        }
+        if (index == 999)
+        {
+            DeckInventroyClass newCard = new DeckInventroyClass();
+            newCard.CardAmount = 1;
+            newCard.CardInfo = cardInfo;
+            PlayerDeck.Add(newCard);
+        }
+        else
+        {
+            PlayerDeck[index].CardAmount++;
+        }
+
+        SavePlayerInfo();
+    }
 
     //New game, save and load stuff
     public void LoadPlayerInfo()
@@ -46,11 +90,31 @@ public class PlayerInfoManager_script : MonoBehaviour
         Name = playerData.Name;
         AvatarIndex = playerData.AvatarIndex;
         Credits = playerData.Credits;
-        DeckInventroy = playerData.DeckInventroy;
+        
+        CombinePlayerDeck(playerData.cardString, playerData.cardAmount);
+
         Wins = playerData.Wins;
         Loses = playerData.Loses;
         Played = playerData.Played;
+
         CalcWinRate();
+    }
+
+    void CombinePlayerDeck(List<string> cardInfo, List<int> cardAmount)
+    {
+        if (cardInfo == null)
+        {
+            return;
+        }
+        PlayerDeck = new List<DeckInventroyClass>();
+        for (int i = 0; i < cardInfo.Count; i++)
+        {
+            DeckInventroyClass newCard = new DeckInventroyClass();
+            newCard.CardInfo = cardInfo[i];
+            newCard.CardAmount = cardAmount[i];
+
+            PlayerDeck.Add(newCard);
+        }
     }
 
     public void SavePlayerInfo()
@@ -62,13 +126,11 @@ public class PlayerInfoManager_script : MonoBehaviour
     {
         AvatarIndex = 0;
         Credits = 1000;
-        DeckInventroy = new List<string>();
         Wins = 0;
         Loses = 0;
         Played = 0;
-        DeckInventroy = new List<string>(CardSelection.AllCards);
-        SavePlayerInfo();
         
+        SavePlayerInfo();
     }
 
     public void SetPlayerName(string s)

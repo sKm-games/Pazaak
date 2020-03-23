@@ -30,7 +30,7 @@ public class PlayCardSelection_script : MonoBehaviour
 
         //Debug.Log("Set button start");
         Transform buttonHolder = this.transform.GetChild(2);
-        _infoButton = buttonHolder.GetChild(2).GetComponent<Button>();
+        _infoButton = buttonHolder.GetChild(0).GetComponent<Button>();
         //Debug.Log("Set button button got - " +_infoText.transform.name);
         _infoButton.onClick.RemoveAllListeners();
         _infoButton.onClick.AddListener(ToggleInfo);
@@ -194,7 +194,7 @@ public class PlayCardSelection_script : MonoBehaviour
 
     public void ToggleInfo()
     {
-        Debug.Log("PlayCardSeletion_script:ToggleInfo: Start");
+        //Debug.Log("PlayCardSeletion_script:ToggleInfo: Start");
         if (_infoText.gameObject.activeInHierarchy)
         {
             _infoText.gameObject.SetActive(false);

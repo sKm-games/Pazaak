@@ -57,6 +57,10 @@ public class AISelecter_script : MonoBehaviour
 
         foreach (CSVImporter_script.ImportedValues value in values)
         {
+            if (value.Values[0] == "") //skip empty entries
+            {
+                continue;
+            }
             AIStatesClass newAI = new AIStatesClass();
             newAI.Difficulty = value.Values[0];
             newAI.AIName = value.Values[1];
@@ -74,7 +78,8 @@ public class AISelecter_script : MonoBehaviour
 
             newAI.SpriteRef = value.Values[5];
             newAI.AISprite = AssetLoader.GetAISprite(newAI.SpriteRef);
-            //newAI.AISprite = //something something using spriteRef
+
+            newAI.Credits = int.Parse(value.Values[6]);
 
             if (newAI.Difficulty == "Easy")
             {

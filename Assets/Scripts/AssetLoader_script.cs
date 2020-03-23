@@ -50,7 +50,7 @@ public class AssetLoader_script : MonoBehaviour
 
             Texture2D texture = www.texture;
             Sprite aiSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-            Debug.Log(fi.Name +" sprite created");
+
 
             SpriteHolderClass temp = new SpriteHolderClass();
 

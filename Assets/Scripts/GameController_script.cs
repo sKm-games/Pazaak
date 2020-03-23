@@ -162,12 +162,13 @@ public class GameController_script : MonoBehaviour
             _uiManager.Invoke("UpdateLeftRoundCounter",1.1f);
             Debug.Log("GameController_script: CompareScore: Player 1(left) Wins");
             SoundManager.PlayEffetDelay(RoundWin, 0.5f);
-            if (LeftBoard.Wins == 3)
+            if (LeftBoard.Wins == 3) //player wins
             {
                 t = "Game Over";
                 s = LeftBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
                 _playerInfoManager.GameWon();
+                _playerInfoManager.ModifyCredits(AiMananger.AIStates.Credits);
                 yield break;
             }
             t = "Round Over";
@@ -181,12 +182,13 @@ public class GameController_script : MonoBehaviour
             _uiManager.Invoke("UpdateRightRoundCounter",1.1f);
             Debug.Log("GameController_script: CompareScore: Player 2(left) Wins");
             SoundManager.PlayEffetDelay(RoundLose, 0.5f);
-            if (RightBoard.Wins == 3)
+            if (RightBoard.Wins == 3) //ai wins
             {
                 t = "Game Over";
                 s = RightBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
                 _playerInfoManager.GameLost();
+                _playerInfoManager.ModifyCredits(-AiMananger.AIStates.Credits);
                 yield break;
             }
             t = "Round Over";
@@ -254,9 +256,13 @@ public class GameController_script : MonoBehaviour
 
     IEnumerator StartNewGame()
     {
+        _uiManager.ToggleLoadingScreen(true);
+        yield return new WaitForSeconds(1f);
+
         LeftBoard.TogglePlayer(false);
         RightBoard.TogglePlayer(false);
-        _uiManager.ToggleLoadingScreen(true);
+        _uiManager.PreGameScreen.SetActive(false);
+        _uiManager.GameBoardScreen.SetActive(true);
         LeftBoard.ResetValues(true);
         RightBoard.ResetValues(true);
         List<PlayCard_script> pcs = new List<PlayCard_script>();

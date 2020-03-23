@@ -29,7 +29,7 @@ public class PlayCard_script : MonoBehaviour
 
     public void BounceBack()
     {
-        Debug.Log("PlayCard_script: BounceBack: Start");
+        //Debug.Log("PlayCard_script: BounceBack: Start");
         this.transform.SetParent(_startingTransform);
         this.transform.localPosition = _startPos;
     }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class UIManager_script : MonoBehaviour
 {
     public PlayerInfoManager_script PlayerInfoManager;
-    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar;
+    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar, CardShop;
     private TextMeshProUGUI _endGameText;
     private TextMeshProUGUI _endGameTitleText;
     private Button _roundEndButton, _cardSeletionButton;
@@ -170,9 +170,9 @@ public class UIManager_script : MonoBehaviour
         _gameController.GameStage = 0;
         UpdatePlayerInfoBar();
         GameBoardScreen.SetActive(false);
-        //CardSelectionScreen.SetActive(true);
+        CardSelectionScreen.SetActive(false);
         PreGameScreen.SetActive(true);
-        
+        PreGameScreen.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     public void DeactiveGameUI()
@@ -181,6 +181,7 @@ public class UIManager_script : MonoBehaviour
         OpponentSelction.SetActive(false);
         GameBoardScreen.SetActive(false);
         EndGameScreen.SetActive(false);
+        CardShop.SetActive(false);
     }
 
     public void UpdatePlayerInfoBar()
