@@ -19,6 +19,7 @@ public class OpponentSelctionManager_script : MonoBehaviour
     private GameController_script _gameController;
     private UIManager_script _uiManager;
     GenerateSelectionCards_script _generateSelectionCards;
+
     void Awake()
     {
         _aiMananger = AiSelecter.GetComponent<AIMananger_script>();
@@ -77,5 +78,6 @@ public class OpponentSelctionManager_script : MonoBehaviour
         _uiManager.CardSelectionScreen.SetActive(true);
         _generateSelectionCards.SetUpCardSelection();
         _uiManager.OpponentSelction.SetActive(false);
+
     }
 }

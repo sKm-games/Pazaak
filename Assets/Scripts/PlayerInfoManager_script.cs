@@ -6,8 +6,6 @@ using System;
 public class PlayerInfoManager_script : MonoBehaviour
 {
     public string Name; //name of the player
-    public int AvatarIndex;
-    public Sprite Avatar; //avatar sprite
     public int Credits; //Amount of money
 
     [System.Serializable]
@@ -20,6 +18,13 @@ public class PlayerInfoManager_script : MonoBehaviour
     public List<DeckInventroyClass> PlayerDeck;
 
     public List<string> ActiveDeck; //All cards the player has selected to play with, max 12
+
+    //avatar info
+    public List<int> PartIndex;
+    public List<Sprite> AvatarParts; //avatar sprite
+
+    public List<int> ColorIndex;
+    public List<Color> PartColors;
     
     //Level? //used to unlock AI opponets?
 
@@ -28,8 +33,8 @@ public class PlayerInfoManager_script : MonoBehaviour
 
     public GenerateSelectionCards_script CardSelection;
     public UIManager_script UiManager;
-
-
+    public CharacterCreator_script CharacterCreator;
+    
     void Update()
     {
         //Debugging
@@ -97,10 +102,17 @@ public class PlayerInfoManager_script : MonoBehaviour
     {
         PlayerData_script playerData = SaveSystem_script.LoadPlayer();
         Name = playerData.Name;
-        AvatarIndex = playerData.AvatarIndex;
+
+        PartIndex = new List<int>(playerData.PartIndex);
+        ColorIndex = new List<int>(playerData.ColorIndex);
+
+        CharacterCreator.GetAvatarInfo(PartIndex, ColorIndex, out AvatarParts, out PartColors);
+        
+        UiManager.SetPlayerGraphics(AvatarParts, PartColors);
+
         Credits = playerData.Credits;
         
-        CombinePlayerDeck(playerData.cardString, playerData.cardAmount);
+        CombinePlayerDeck(playerData.CardString, playerData.CardAmount);
 
         Wins = playerData.Wins;
         Loses = playerData.Loses;
@@ -133,17 +145,26 @@ public class PlayerInfoManager_script : MonoBehaviour
 
     public void SetDefaultValues()
     {
-        AvatarIndex = 0;
         Credits = 1000;
         Wins = 0;
         Loses = 0;
         Played = 0;
-        
+
+        SetPlayerAvatar();
+
         SavePlayerInfo();
     }
 
     public void SetPlayerName(string s)
     {
         Name = s;
+    }
+
+    public void SetPlayerAvatar()
+    {
+        CharacterCreator.GetIndexValues(out PartIndex, out ColorIndex);
+        CharacterCreator.GetAvatarInfo(PartIndex, ColorIndex, out AvatarParts, out PartColors);
+
+        UiManager.SetPlayerGraphics(AvatarParts, PartColors);
     }
 }

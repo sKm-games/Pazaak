@@ -10,19 +10,35 @@ public class PlayerData_script
     public int Credits; //Amount of money
     public List<string> DeckInventroy; //All cards the player own
 
-    public List<string> cardString;
-    public List<int> cardAmount;
+    public List<string> CardString;
+    public List<int> CardAmount;
 
     public int Wins, Loses, Played;
+
+    public List<int> PartIndex;
+    public List<int> ColorIndex;
 
     public PlayerData_script(PlayerInfoManager_script player)
     {
         Name = player.Name;
-        AvatarIndex = player.AvatarIndex;
         Credits = player.Credits;
         //DeckInventroy = new List<string>(player.DeckInventroy);
 
-        SplitPlayerDeck(out cardString,  out cardAmount, player);
+        SplitPlayerDeck(out CardString,  out CardAmount, player);
+
+        PartIndex = new List<int>(player.PartIndex);
+
+        foreach (int p in PartIndex)
+        {
+            Debug.Log("part index: " + p);
+        }
+
+        ColorIndex = new List<int>(player.ColorIndex);
+
+        foreach (int c in ColorIndex)
+        {
+            Debug.Log("color index: " + c);
+        }
 
         Wins = player.Wins;
         Loses = player.Loses;

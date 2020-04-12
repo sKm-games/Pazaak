@@ -198,6 +198,9 @@ public class GenerateSelectionCards_script : MonoBehaviour
         foreach (PlayCard_script pc in pcs)
         {
             pc.BounceBack();
+            //hide card if card info is open
+            GameObject cardInfo = pc.transform.parent.parent.GetChild(1).gameObject;
+            pc.gameObject.SetActive(!cardInfo.activeInHierarchy);
         }
         CurrentDeck = new List<string>();
 

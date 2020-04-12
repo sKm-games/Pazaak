@@ -74,6 +74,8 @@
     <Compile Include="Assets\Scripts\AssetLoader_script.cs" />
     <Compile Include="Assets\Scripts\CSVImporter_script.cs" />
     <Compile Include="Assets\Scripts\CardAbilityInfoManager_script.cs" />
+    <Compile Include="Assets\Scripts\CharacterCreator_script.cs" />
+    <Compile Include="Assets\Scripts\DebugControls_script.cs" />
     <Compile Include="Assets\Scripts\GameController_script.cs" />
     <Compile Include="Assets\Scripts\GenerateSelectionCards_script.cs" />
     <Compile Include="Assets\Scripts\GlobalDeckManager_script.cs" />

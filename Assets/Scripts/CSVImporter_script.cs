@@ -29,8 +29,13 @@ public class CSVImporter_script : MonoBehaviour
 
     public static event LoadingDone OnLoadingDone;
 
+    AssetLoader_script _assetsLoader;
+
+    public bool CSVLoadingDone;
+
     void Awake()
     {
+        _assetsLoader = GetComponent<AssetLoader_script>();
         UiManager.LoadingScreen.SetActive(true);
     }
 
@@ -135,14 +140,32 @@ public class CSVImporter_script : MonoBehaviour
             AllImportedValues[i] = new ImportedValues();
             AllImportedValues[i].Values = AllImportedStrings[i].Split(';');
         }
+        LoadAIImages();
+        
+    }
+
+    private void LoadAIImages()
+    {
+        List<string> aiFileName = new List<string>();
+        foreach (ImportedValues iv in AllImportedValues)
+        {
+            if (string.IsNullOrEmpty(iv.Values[5])) //skip blanks
+            {
+                continue;
+            }
+            aiFileName.Add(iv.Values[5]);
+        }
+
+        _assetsLoader.ImportAIGraphics(aiFileName);
         CheckLoadingDone();
     }
 
     public void CheckLoadingDone() //add some sort of loading done check
     {
-        //LoadingScreen.SetActive(false);
+        //LoadingScreen.SetActive(false);        
         OnLoadingDone(AllImportedValues);
-        UiManager.ToggleLoadingScreen(false);
+        CSVLoadingDone = true;
+        //UiManager.ToggleLoadingScreen(false);
     }
 }
 

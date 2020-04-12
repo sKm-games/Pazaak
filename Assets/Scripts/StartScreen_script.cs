@@ -8,20 +8,13 @@ public class StartScreen_script : MonoBehaviour
 {
     public PlayerInfoManager_script PlayerInfoManager;
     public TMP_InputField NameInput;
-    public Button ContinueButton, DeleteSaveButton;
+    public Button ContinueButton;
     public UIManager_script UiManager;
-
 
     void Awake()
     {
         bool file = SaveSystem_script.FileExist();
         ContinueButton.interactable = file;
-        DeleteSaveButton.interactable = file;
-        DeleteSaveButton.gameObject.SetActive(false);
-
-#if UNITY_EDITOR_WIN
-        DeleteSaveButton.gameObject.SetActive(true);
-#endif
 #if UNITY_WEBGL
         ContinueButton.gameObject.SetActive(false);
 #endif
@@ -53,10 +46,9 @@ public class StartScreen_script : MonoBehaviour
         UiManager.UpdatePlayerInfoBar();
     }
 
-    public void DeleteGameSave()
+    public void FocusPlayerName()
     {
-        SaveSystem_script.DeleteSaveFiles();
-        ContinueButton.interactable = false;
+        NameInput.ActivateInputField();
     }
 
     public void SetPlayerName()

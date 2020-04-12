@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UIManager_script : MonoBehaviour
 {
     public PlayerInfoManager_script PlayerInfoManager;
+
     public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar, CardShop;
     private TextMeshProUGUI _endGameText;
     private TextMeshProUGUI _endGameTitleText;
@@ -23,9 +24,11 @@ public class UIManager_script : MonoBehaviour
     public TextMeshProUGUI VersionText;
     private TextMeshProUGUI[] _endGameLeftPlayerText;
     private TextMeshProUGUI[] _endGameRightPlayerText;
-    private TextMeshProUGUI _leftPlayerName;
-    private TextMeshProUGUI _rightPlayerName;
+    private TextMeshProUGUI _leftPlayerName, _rightPlayerName;    
     public GameObject LoadingScreen;
+    public GameObject PreGamePlayerGraphics;
+    private Image[] _leftPlayerImages, _preGamePlayerImages;
+    private Image _rightPlayerImage;
 
     private TextMeshProUGUI _playerInfoBarName;
     private TextMeshProUGUI _playerInfoBarCredits;
@@ -48,7 +51,13 @@ public class UIManager_script : MonoBehaviour
         _rightBoard = _gameController.RightBoard;
 
         _leftPlayerName = PlayerIndicator[0].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
+        _leftPlayerImages = PlayerIndicator[0].transform.parent.parent.GetChild(5).GetComponentsInChildren<Image>();
+        _preGamePlayerImages = PreGamePlayerGraphics.GetComponentsInChildren<Image>();
+
+
         _rightPlayerName = PlayerIndicator[1].transform.parent.parent.GetChild(4).GetComponent<TextMeshProUGUI>();
+        _rightPlayerImage = PlayerIndicator[1].transform.parent.parent.GetChild(5).GetComponent<Image>();
+
 
         _playerInfoBarName = PlayerInfoBar.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         _playerInfoBarCredits = PlayerInfoBar.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
@@ -146,9 +155,24 @@ public class UIManager_script : MonoBehaviour
     public void SetPlayerNames()
     {
         _leftBoard.PlayerName = PlayerInfoManager.Name;
-
         _leftPlayerName.text = _leftBoard.PlayerName;
+
         _rightPlayerName.text = _rightBoard.PlayerName;
+        _rightPlayerImage.sprite = _gameController.AiMananger.AIStates.AISprite;
+    }
+
+    public void SetPlayerGraphics(List<Sprite> parts, List<Color> colors)
+    {
+        //List<Sprite> parts = new List<Sprite>(PlayerInfoManager.AvatarParts);
+        //List<Color> colors = new List<Color>(PlayerInfoManager.PartColors);
+
+        for (int i = 0; i < _leftPlayerImages.Length - 1; i++)
+        {
+            _leftPlayerImages[i].sprite = parts[i];
+            _leftPlayerImages[i].color = colors[i];
+            _preGamePlayerImages[i].sprite = parts[i];
+            _preGamePlayerImages[i].color = colors[i];
+        }
     }
 
     public void ToggleLoadingScreen(bool b)
