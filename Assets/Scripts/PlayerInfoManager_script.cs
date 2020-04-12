@@ -30,6 +30,15 @@ public class PlayerInfoManager_script : MonoBehaviour
     public UIManager_script UiManager;
 
 
+    void Update()
+    {
+        //Debugging
+        if (Input.GetKeyDown(KeyCode.F2)) //cheat in money
+        {
+            ModifyCredits(99999);
+        }
+    }
+
     public void CalcWinRate()
     {
         _winRate = (float)Wins / (float)Played;

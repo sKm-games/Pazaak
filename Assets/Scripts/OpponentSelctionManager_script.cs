@@ -18,7 +18,7 @@ public class OpponentSelctionManager_script : MonoBehaviour
 
     private GameController_script _gameController;
     private UIManager_script _uiManager;
-
+    GenerateSelectionCards_script _generateSelectionCards;
     void Awake()
     {
         _aiMananger = AiSelecter.GetComponent<AIMananger_script>();
@@ -39,6 +39,9 @@ public class OpponentSelctionManager_script : MonoBehaviour
         _aiText.Add(_aiHolder.GetChild(2).GetChild(1).GetComponent<TextMeshProUGUI>());
 
         _uiManager.OpponentSelction.SetActive(false);
+
+        _generateSelectionCards = _uiManager.CardSelectionScreen.GetComponent<GenerateSelectionCards_script>();
+
     }
     
     public void GetAIs()
@@ -69,9 +72,10 @@ public class OpponentSelctionManager_script : MonoBehaviour
     }
 
     public void SelectAI(Transform t)
-    {
+    {        
         _aiMananger.ConfigAI(_activeAIs[t.GetSiblingIndex()]);
         _uiManager.CardSelectionScreen.SetActive(true);
+        _generateSelectionCards.SetUpCardSelection();
         _uiManager.OpponentSelction.SetActive(false);
     }
 }

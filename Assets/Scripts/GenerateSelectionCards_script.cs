@@ -27,13 +27,14 @@ public class GenerateSelectionCards_script : MonoBehaviour
     public PlayerInfoManager_script PlayerInfo;
 
     private List<PlayCard_script> _allcards;
+    private List<PlayCardSelection_script> _allCardSlots;
 
-    void Start()
+    void Awake()
     {
         _selectedCardHolders = SelectedCardHolder.GetComponentsInChildren<MainCardHolder_script>();
         _pageText = CardPageButtonHolder.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         SetCardPages();
-        GenerateAllCards();
+        //GenerateAllCards();
         _fillButton = MainButtonHolder.transform.GetChild(0).GetComponent<Button>();
         _startButton = MainButtonHolder.transform.GetChild(1).GetComponent<Button>();
         _clearButton = MainButtonHolder.transform.GetChild(2).GetComponent<Button>();
@@ -41,6 +42,12 @@ public class GenerateSelectionCards_script : MonoBehaviour
         _startButton.interactable = false;
         _clearButton.interactable = false;
 
+    }
+
+    public void SetUpCardSelection()
+    {
+        SetCardPages();
+        GenerateAllCards();        
     }
 
     private void GenerateAllCards()
@@ -59,11 +66,14 @@ public class GenerateSelectionCards_script : MonoBehaviour
         }*/
 
         _allcards = new List<PlayCard_script>();
+        _allCardSlots = new List<PlayCardSelection_script>();
+        _activePages = 0;
+        //Need to add check so only generation newly bought cards. currently clearing all and regenerating when new bought
 
         foreach (PlayerInfoManager_script.DeckInventroyClass cardInfo in PlayerInfo.PlayerDeck)
         {
             Transform parent = GetCardPage();
-            GameObject card = Instantiate(SelectCardPrefab, parent.position, Quaternion.identity,
+                        GameObject card = Instantiate(SelectCardPrefab, parent.position, Quaternion.identity,
                 parent);
             PlayCardSelection_script pcs = card.GetComponentInChildren<PlayCardSelection_script>();
             PlayCard_script pc = card.GetComponentInChildren<PlayCard_script>();
@@ -72,6 +82,7 @@ public class GenerateSelectionCards_script : MonoBehaviour
             pcs.ConfigDefaultCard(cardInfo.CardInfo, cardInfo.CardAmount, GameController);
 
             _allcards.Add(pc);
+            _allCardSlots.Add(pcs);
         }
         
 
@@ -115,6 +126,7 @@ public class GenerateSelectionCards_script : MonoBehaviour
     {
         foreach (Transform t in _cardPages)
         {
+            //Debug.Log("GetCardPages: " + t.name + ", childs " + t.childCount);
             if (t.childCount < 10)
             {
                 return t;
@@ -207,5 +219,22 @@ public class GenerateSelectionCards_script : MonoBehaviour
         }
         _cardPages[_cardPageIndex].gameObject.SetActive(true);
         _pageText.text = (_cardPageIndex + 1) +" / " + (_activePages + 1); //offset by 1 to show nicer
+    }
+
+    public void CleanUp()
+    {
+        if (_allcards == null)
+        {
+            return;
+        }
+        ClearSelection();
+        foreach (PlayCardSelection_script pcs in _allCardSlots)
+        {
+            if (pcs == null)
+            {
+                continue;
+            }
+            Destroy(pcs.gameObject);
+        }                
     }
 }

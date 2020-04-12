@@ -1,7 +1,7 @@
-Difficulty;Name;DeckValues;EndValues;RiskValue;SpirteName;Credits;;
-Easy;MS Sam;N|5,N|6,N|7,N|8,N|9,N|5,N|6,N|7,N|8,N|9;10;50;AI01.png;100;;
-Medium;Holly;N|5,N|6,N|7,N|8,N|9,N|5,N|6,N|7,N|8,N|9;5;25;AI02.png;250;;
-Hard;Skynet;N|5,N|6,N|7,N|8,N|9,N|5,N|6,N|7,N|8,N|9;2;10;AI01.png;500;;
+﻿Difficulty;Name;DeckValues;EndValues;RiskValue;SpirteName;Credits;;
+Easy;MS Sam;N|5,N|6,N|7,N|8,N|9,N|5,N|6,N|7,N|8,N|9;11;50;Sam.png;100;;
+Medium;Holly;N|5,N|6,N|7,N|8,N|9,N|5,N|6,N|7,N|8,N|9;5;25;Holly.png;250;;
+Hard;Skynet;N|5,N|6,N|7,N|8,N|9,N|-5,N|-6,N|-7,N|-8,N|-9;2;10;Skynet.png;500;;
 ;;;;;;;;
 ;;;;;;;;
 ;;;;;;;;
