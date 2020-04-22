@@ -18,6 +18,9 @@ public class PlayerData_script
     public List<int> PartIndex;
     public List<int> ColorIndex;
 
+    public float MusicVolume;
+    public float SFXVolume;
+
     public PlayerData_script(PlayerInfoManager_script player)
     {
         Name = player.Name;
@@ -43,6 +46,9 @@ public class PlayerData_script
         Wins = player.Wins;
         Loses = player.Loses;
         Played = player.Played;
+
+        MusicVolume = player.MusicVolume;
+        SFXVolume = player.SFXVolume;
     }
 
     private void SplitPlayerDeck(out List<string> cardInfo, out List<int> cardAmount, PlayerInfoManager_script player)

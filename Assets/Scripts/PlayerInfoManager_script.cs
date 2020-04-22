@@ -25,6 +25,10 @@ public class PlayerInfoManager_script : MonoBehaviour
 
     public List<int> ColorIndex;
     public List<Color> PartColors;
+
+    //options info
+    public float MusicVolume;
+    public float SFXVolume;    
     
     //Level? //used to unlock AI opponets?
 
@@ -34,6 +38,7 @@ public class PlayerInfoManager_script : MonoBehaviour
     public GenerateSelectionCards_script CardSelection;
     public UIManager_script UiManager;
     public CharacterCreator_script CharacterCreator;
+    public Options_script Options;
     
     void Update()
     {
@@ -117,6 +122,11 @@ public class PlayerInfoManager_script : MonoBehaviour
         Wins = playerData.Wins;
         Loses = playerData.Loses;
         Played = playerData.Played;
+
+        MusicVolume = playerData.MusicVolume;
+        SFXVolume = playerData.SFXVolume;
+
+        Options.LoadVolumeSettings(MusicVolume, SFXVolume);
 
         CalcWinRate();
     }

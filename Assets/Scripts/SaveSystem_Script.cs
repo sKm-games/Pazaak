@@ -11,8 +11,8 @@ public static class SaveSystem_script
         BinaryFormatter bf = new BinaryFormatter();
 
         string path = Application.persistentDataPath + "/player.skm";
-        FileStream stream = new FileStream(path,FileMode.Create);
-        
+        FileStream stream = new FileStream(path, FileMode.Create);
+
         PlayerData_script playerData = new PlayerData_script(player);
 
         bf.Serialize(stream, playerData);

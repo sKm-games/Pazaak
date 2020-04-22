@@ -213,4 +213,17 @@ public class UIManager_script : MonoBehaviour
         _playerInfoBarName.text = PlayerInfoManager.Name;
         _playerInfoBarCredits.text = "Credits: " + PlayerInfoManager.Credits;
     }
+
+    public void QuitGame()
+    {
+        ToggleLoadingScreen(true);
+        StartCoroutine("IEQuitGame");        
+    }
+
+    IEnumerator IEQuitGame()
+    {
+        PlayerInfoManager.SavePlayerInfo();
+        yield return new WaitForSeconds(1f);
+        Application.Quit();
+    }
 }

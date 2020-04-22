@@ -12,6 +12,16 @@ public class SoundManager_script : MonoBehaviour
         _sfxSource = GetComponents<AudioSource>()[1];
     }
 
+    public void SetMusicVolume(float v)
+    {
+        _musicSource.volume = v;
+    }
+
+    public void SetSFXVolume(float v)
+    {
+        _sfxSource.volume = v;
+    }
+
     public void PlayEffet(AudioClip ac, float v = 0.5f)
     {
         float r = Random.Range(0.8f, 1.2f);
