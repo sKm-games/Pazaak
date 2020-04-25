@@ -64,6 +64,12 @@ public class AIMananger_script : MonoBehaviour
         PlayCard_script tempCard = null;
         PlayCard_script drawCard = null;
 
+        if (PlayerBoard.ActiveValue > _gameController.MaxValue) //player over max, AI should expect to win
+        {
+            AIBoard.SetPlayerDone();
+            yield break;
+        }
+
         //Check if random card gets AI close
         if (AIBoard.ActiveValue >= (_gameController.MaxValue - AIStates.EndOffset) && AIBoard.ActiveValue < _gameController.MaxValue && !PlayerBoard.PlayerDone)
         {
@@ -99,26 +105,6 @@ public class AIMananger_script : MonoBehaviour
                 _moveCard = StartCoroutine(MoveCard(tempCard));
                 yield break;
             }
-        }
-
-        //player done check higher and less 20
-        if (PlayerBoard.PlayerDone)
-        {
-            Debug.Log("AIMananger_script: DoDeterminePlay: Player done check");
-            if (AIBoard.ActiveValue > PlayerBoard.ActiveValue) //random card won the game
-            {
-                Debug.Log("AIMananger_script: DoDeterminePlay: Random card fun");
-                AIBoard.SetPlayerDone();
-                yield break;
-            }
-            CheckPlayerDone(out tempCard, out drawCard);
-        }
-
-        if (tempCard != null)
-        {
-            Debug.Log("AIMananger_script: DoDeterminePlay: Play card");
-            _moveCard = StartCoroutine(MoveCard(tempCard));
-            yield break;
         }
 
         //check able to get 20

@@ -14,23 +14,23 @@ public class CharacterCreator_script : MonoBehaviour
     }
 
     public List<CharacterCreationSpritesClass> BackgroundGraphics;
-    int _backgroundIndex;
-    int _backgroundColorIndex;
+    private int _backgroundIndex;
+    private int _backgroundColorIndex;
     public List<CharacterCreationSpritesClass> BodyGraphics;
-    int _bodyIndex;
-    int _bodyColorIndex;
+    private int _bodyIndex;
+    private int _bodyColorIndex;
     public List<CharacterCreationSpritesClass> HeadGraphics;
-    int _headIndex;
-    int _headColorIndex;
+    private int _headIndex;
+    private int _headColorIndex;
     public List<CharacterCreationSpritesClass> EyesGraphics;
-    int _eyesIndex;
-    int _eyesColorIndex;
+    private int _eyesIndex;
+    private int _eyesColorIndex;
     public List<CharacterCreationSpritesClass> NoseGraphics;
-    int _noseIndex;
-    int _noseColorIndex;
+    private int _noseIndex;
+    private int _noseColorIndex;
     public List<CharacterCreationSpritesClass> MouthGraphics;
-    int _mouthIndex;
-    int _mouthColorIndex;
+    private int _mouthIndex;
+    private int _mouthColorIndex;
 
     [System.Serializable]
     public class ColorSelector
@@ -138,8 +138,7 @@ public class CharacterCreator_script : MonoBehaviour
     }
 
     public void SelectCategory(string name)
-    {
-        SaveIndex();
+    {        
         switch(name)
         {
             case "Background":
@@ -204,6 +203,7 @@ public class CharacterCreator_script : MonoBehaviour
             _activeIndex = _maxIndex-1;
         }        
         UpdatePartInfo(_activeIndex);
+        SaveIndex();
     }
 
     public void SelectColor(int index)
@@ -218,6 +218,7 @@ public class CharacterCreator_script : MonoBehaviour
             _activeColorIndex = Colors.Length-1;
         }
         UpdateColorInfo(index);
+        SaveIndex();
     }
         
     void UpdatePartInfo(int index)

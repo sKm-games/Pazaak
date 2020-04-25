@@ -9,7 +9,7 @@ public class AISelecter_script : MonoBehaviour
     {
         public string Difficulty;
         public string AIName;
-        public int Credits;
+        public float Odds;
         public string SpriteRef;
         public Sprite AISprite;
         public List<string> DeckValues;
@@ -79,7 +79,7 @@ public class AISelecter_script : MonoBehaviour
             newAI.SpriteRef = value.Values[5];
             newAI.AISprite = AssetLoader.GetAISprite(newAI.SpriteRef);
 
-            newAI.Credits = int.Parse(value.Values[6]);
+            newAI.Odds = float.Parse(value.Values[6]);
 
             if (newAI.Difficulty == "Easy")
             {

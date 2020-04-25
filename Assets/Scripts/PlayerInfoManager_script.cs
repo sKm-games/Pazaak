@@ -35,6 +35,8 @@ public class PlayerInfoManager_script : MonoBehaviour
     public int Wins, Loses, Played;
     private float _winRate; //wins/gamesPlayed
 
+    public int BetAmount;
+
     public GenerateSelectionCards_script CardSelection;
     public UIManager_script UiManager;
     public CharacterCreator_script CharacterCreator;
@@ -101,7 +103,7 @@ public class PlayerInfoManager_script : MonoBehaviour
 
         SavePlayerInfo();
     }
-
+    
     //New game, save and load stuff
     public void LoadPlayerInfo()
     {

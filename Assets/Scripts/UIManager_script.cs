@@ -9,7 +9,7 @@ public class UIManager_script : MonoBehaviour
 {
     public PlayerInfoManager_script PlayerInfoManager;
 
-    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar, CardShop;
+    public GameObject EndGameScreen, CardSelectionScreen, GameBoardScreen, StartScreen, PreGameScreen, OpponentSelction, PlayerInfoBar, CardShop, BetScreen;
     private TextMeshProUGUI _endGameText;
     private TextMeshProUGUI _endGameTitleText;
     private Button _roundEndButton, _cardSeletionButton;
@@ -32,6 +32,8 @@ public class UIManager_script : MonoBehaviour
 
     private TextMeshProUGUI _playerInfoBarName;
     private TextMeshProUGUI _playerInfoBarCredits;
+
+    private TMP_InputField _bettingInputfield;
 
     void Start()
     {
@@ -62,9 +64,12 @@ public class UIManager_script : MonoBehaviour
         _playerInfoBarName = PlayerInfoBar.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         _playerInfoBarCredits = PlayerInfoBar.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
 
+        _bettingInputfield = BetScreen.transform.GetChild(1).GetComponent<TMP_InputField>();
+
         ResetUI();
         GameBoardScreen.SetActive(false);
         CardSelectionScreen.SetActive(false);
+        BetScreen.SetActive(false);
         StartScreen.SetActive(true);
 
         VersionText.text = "Work in progress v. " +Application.version;
@@ -214,13 +219,26 @@ public class UIManager_script : MonoBehaviour
         _playerInfoBarCredits.text = "Credits: " + PlayerInfoManager.Credits;
     }
 
-    public void QuitGame()
+    public void SetBetAmount()
     {
-        ToggleLoadingScreen(true);
-        StartCoroutine("IEQuitGame");        
+        if (!int.TryParse(_bettingInputfield.text, out int bet))
+        {
+            return;
+        }
+        if (bet > PlayerInfoManager.Credits)
+        {            
+            _bettingInputfield.text = PlayerInfoManager.Credits.ToString("F0");
+            bet = PlayerInfoManager.Credits;
+        }
+        PlayerInfoManager.BetAmount = bet;
     }
 
-    IEnumerator IEQuitGame()
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    IEnumerator IEQuitGameAndSave()
     {
         PlayerInfoManager.SavePlayerInfo();
         yield return new WaitForSeconds(1f);

@@ -65,8 +65,10 @@ public class OpponentSelctionManager_script : MonoBehaviour
             string s;
             s = "<b>" + _activeAIs[i].AIName + "</b>\n";
             s += _activeAIs[i].Difficulty +"\n";
-            s += "Bet \n";
-            s += _activeAIs[i].Credits;
+            s += "Odds \n";
+            string b = _activeAIs[i].Odds.ToString("F1");
+            b = b.Replace(',', '.');
+            s += b;
 
             _aiText[i].text = s;
         }
@@ -75,9 +77,8 @@ public class OpponentSelctionManager_script : MonoBehaviour
     public void SelectAI(Transform t)
     {        
         _aiMananger.ConfigAI(_activeAIs[t.GetSiblingIndex()]);
-        _uiManager.CardSelectionScreen.SetActive(true);
         _generateSelectionCards.SetUpCardSelection();
-        _uiManager.OpponentSelction.SetActive(false);
-
+        //_uiManager.CardSelectionScreen.SetActive(true);
+        //_uiManager.OpponentSelction.SetActive(false);
     }
 }

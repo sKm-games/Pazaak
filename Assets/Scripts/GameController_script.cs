@@ -168,7 +168,8 @@ public class GameController_script : MonoBehaviour
                 s = LeftBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
                 _playerInfoManager.GameWon();
-                _playerInfoManager.ModifyCredits(AiMananger.AIStates.Credits);
+                int winnings = Mathf.RoundToInt(AiMananger.AIStates.Odds * _playerInfoManager.BetAmount);
+                _playerInfoManager.ModifyCredits(winnings);
                 yield break;
             }
             t = "Round Over";
@@ -188,7 +189,7 @@ public class GameController_script : MonoBehaviour
                 s = RightBoard.PlayerName + " Wins";
                 _uiManager.ToggleEndScreen(true,false, t, s, leftScore, rightScore);
                 _playerInfoManager.GameLost();
-                _playerInfoManager.ModifyCredits(-AiMananger.AIStates.Credits);
+                _playerInfoManager.ModifyCredits(-_playerInfoManager.BetAmount);
                 yield break;
             }
             t = "Round Over";
